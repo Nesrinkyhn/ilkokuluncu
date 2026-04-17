@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android 12+ (API 31+) için yedekleme ve cihaz aktarım kuralları.
+    - cloud-backup  : Google Hesabı bulut yedeği (uygulama güncellemelerinde korunur)
+    - device-transfer: Yeni cihaza geçişte (Veri Aktarımı) skorlar taşınır
+-->
+<data-extraction-rules>
+
+    <!-- Bulut yedeği: şifreli olmayan cihazlarda da aktif et -->
+    <cloud-backup disableIfNoEncryptionCapabilities="false">
+        <include domain="sharedpref" path="ilkokuluncu_prefs.xml"/>
+    </cloud-backup>
+
+    <!-- Cihaz transferi: eski telefon → yeni telefon aktarımı -->
+    <device-transfer>
+        <include domain="sharedpref" path="ilkokuluncu_prefs.xml"/>
+    </device-transfer>
+
+</data-extraction-rules>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <group
+        android:translateX="24"
+        android:translateY="24">
+        
+        <!-- Saat dış çerçeve -->
+        <path
+            android:fillColor="#ffffff"
+            android:pathData="M30,30m-28,0a28,28 0,1,1 56,0a28,28 0,1,1 -56,0"/>
+        
+        <!-- Saat iç yüzey -->
+        <path
+            android:fillColor="#FFE082"
+            android:pathData="M30,30m-24,0a24,24 0,1,1 48,0a24,24 0,1,1 -48,0"/>
+        
+        <!-- Saat işaretleri (12, 3, 6, 9) -->
+        <path
+            android:fillColor="#333333"
+            android:pathData="M30,8 L30,12"/>
+        <path
+            android:fillColor="#333333"
+            android:pathData="M52,30 L48,30"/>
+        <path
+            android:fillColor="#333333"
+            android:pathData="M30,48 L30,52"/>
+        <path
+            android:fillColor="#333333"
+            android:pathData="M8,30 L12,30"/>
+        
+        <!-- Akrep (saat 3'ü gösteriyor) -->
+        <path
+            android:fillColor="#E74C3C"
+            android:strokeWidth="3"
+            android:strokeColor="#E74C3C"
+            android:strokeLineCap="round"
+            android:pathData="M30,30 L40,30"/>
+        
+        <!-- Yelkovan (12'yi gösteriyor) -->
+        <path
+            android:fillColor="#3498DB"
+            android:strokeWidth="2"
+            android:strokeColor="#3498DB"
+            android:strokeLineCap="round"
+            android:pathData="M30,30 L30,15"/>
+        
+        <!-- Merkez nokta -->
+        <path
+            android:fillColor="#333333"
+            android:pathData="M30,30m-2,0a2,2 0,1,1 4,0a2,2 0,1,1 -4,0"/>
+        
+        <!-- Kalem simgesi (eğitim vurgusu) -->
+        <group
+            android:translateX="42"
+            android:translateY="42">
+            
+            <path
+                android:fillColor="#FF6B6B"
+                android:pathData="M2,0 L8,0 L8,10 L5,12 L2,10 Z"/>
+            
+            <path
+                android:fillColor="#FFA07A"
+                android:pathData="M3,10 L7,10 L6,12 L4,12 Z"/>
+            
+            <path
+                android:fillColor="#FFD93D"
+                android:pathData="M2,-1 L8,-1 L8,0 L2,0 Z"/>
+        </group>
+        
+        <!-- Yıldızlar (başarı/eğlence vurgusu) -->
+        <path
+            android:fillColor="#FFD93D"
+            android:fillAlpha="0.9"
+            android:pathData="M8,10 L9,12 L11,12 L9.5,13.5 L10,16 L8,14.5 L6,16 L6.5,13.5 L5,12 L7,12 Z"/>
+        
+        <path
+            android:fillColor="#FFD93D"
+            android:fillAlpha="0.9"
+            android:pathData="M52,10 L53,12 L55,12 L53.5,13.5 L54,16 L52,14.5 L50,16 L50.5,13.5 L49,12 L51,12 Z"/>
+    </group>
+</vector>

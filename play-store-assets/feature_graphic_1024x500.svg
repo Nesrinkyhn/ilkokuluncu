@@ -1,0 +1,149 @@
+<svg width="1024" height="500" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient arka plan -->
+  <defs>
+    <linearGradient id="banner-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F093FB;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="clock-face" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF8DC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFE082;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Arka plan -->
+  <rect width="1024" height="500" fill="url(#banner-gradient)"/>
+  
+  <!-- Dekoratif daireler (arka plan) -->
+  <g opacity="0.1">
+    <circle cx="100" cy="100" r="80" fill="white"/>
+    <circle cx="924" cy="100" r="60" fill="white"/>
+    <circle cx="100" cy="400" r="60" fill="white"/>
+    <circle cx="924" cy="400" r="80" fill="white"/>
+    <circle cx="512" cy="50" r="40" fill="white"/>
+    <circle cx="300" cy="450" r="50" fill="white"/>
+    <circle cx="724" cy="450" r="50" fill="white"/>
+  </g>
+  
+  <!-- Sol taraf - Saat -->
+  <g transform="translate(200, 250)">
+    <!-- Dış çerçeve (beyaz) -->
+    <circle cx="0" cy="0" r="130" fill="white" filter="url(#glow)"/>
+    
+    <!-- Saat yüzeyi -->
+    <circle cx="0" cy="0" r="115" fill="url(#clock-face)"/>
+    
+    <!-- Saat işaretleri -->
+    <g stroke="#333333" stroke-width="3" stroke-linecap="round">
+      <line x1="0" y1="-95" x2="0" y2="-85"/>
+      <line x1="95" y1="0" x2="85" y2="0"/>
+      <line x1="0" y1="95" x2="0" y2="85"/>
+      <line x1="-95" y1="0" x2="-85" y2="0"/>
+    </g>
+    
+    <!-- Rakamlar -->
+    <text x="0" y="-65" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          fill="#E74C3C" text-anchor="middle" dominant-baseline="middle">12</text>
+    <text x="65" y="8" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          fill="#3498DB" text-anchor="middle" dominant-baseline="middle">3</text>
+    <text x="0" y="73" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          fill="#2ECC71" text-anchor="middle" dominant-baseline="middle">6</text>
+    <text x="-65" y="8" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          fill="#F39C12" text-anchor="middle" dominant-baseline="middle">9</text>
+    
+    <!-- Akrep -->
+    <line x1="0" y1="0" x2="50" y2="0" stroke="#E74C3C" stroke-width="7" stroke-linecap="round"/>
+    
+    <!-- Yelkovan -->
+    <line x1="0" y1="0" x2="0" y2="-70" stroke="#3498DB" stroke-width="5" stroke-linecap="round"/>
+    
+    <!-- Merkez -->
+    <circle cx="0" cy="0" r="6" fill="#333333"/>
+  </g>
+  
+  <!-- Orta kısım - Ana başlık -->
+  <g>
+    <!-- Başlık -->
+    <text x="512" y="180" font-family="Arial, sans-serif" font-size="96" font-weight="bold" 
+          fill="#ffffff" text-anchor="middle" dominant-baseline="middle" 
+          filter="url(#glow)">
+      İlkokuluncu
+    </text>
+    
+    <!-- Alt başlık -->
+    <text x="512" y="260" font-family="Arial, sans-serif" font-size="42" 
+          fill="#ffffff" text-anchor="middle" dominant-baseline="middle" opacity="0.95">
+      Eğlenceli Saat Öğrenme Oyunu
+    </text>
+    
+    <!-- Özellikler -->
+    <g transform="translate(512, 330)">
+      <!-- Yıldız + Metin -->
+      <text x="-150" y="0" font-family="Arial, sans-serif" font-size="28" 
+            fill="#FFD93D" text-anchor="middle">⭐</text>
+      <text x="-100" y="0" font-family="Arial, sans-serif" font-size="24" 
+            fill="#ffffff" text-anchor="start" opacity="0.9">Renkli Saatler</text>
+      
+      <!-- Kalp + Metin -->
+      <text x="0" y="0" font-family="Arial, sans-serif" font-size="28" 
+            fill="#FF6B6B" text-anchor="middle">❤️</text>
+      <text x="50" y="0" font-family="Arial, sans-serif" font-size="24" 
+            fill="#ffffff" text-anchor="start" opacity="0.9">Sevimli Hayvanlar</text>
+      
+      <!-- Rozet + Metin -->
+      <text x="250" y="0" font-family="Arial, sans-serif" font-size="28" 
+            fill="#4ECDC4" text-anchor="middle">🏆</text>
+      <text x="300" y="0" font-family="Arial, sans-serif" font-size="24" 
+            fill="#ffffff" text-anchor="start" opacity="0.9">Level Sistemi</text>
+    </g>
+  </g>
+  
+  <!-- Sağ taraf - Hayvan karakterleri -->
+  <g transform="translate(824, 250)">
+    <!-- Hayvan emojileri daire içinde -->
+    <circle cx="0" cy="-60" r="35" fill="white" opacity="0.9"/>
+    <text x="0" y="-50" font-family="Arial, sans-serif" font-size="48" text-anchor="middle">🐱</text>
+    
+    <circle cx="60" cy="0" r="35" fill="white" opacity="0.9"/>
+    <text x="60" y="10" font-family="Arial, sans-serif" font-size="48" text-anchor="middle">🐶</text>
+    
+    <circle cx="0" cy="60" r="35" fill="white" opacity="0.9"/>
+    <text x="0" y="70" font-family="Arial, sans-serif" font-size="48" text-anchor="middle">🐰</text>
+    
+    <circle cx="-60" cy="0" r="35" fill="white" opacity="0.9"/>
+    <text x="-60" y="10" font-family="Arial, sans-serif" font-size="48" text-anchor="middle">🐻</text>
+  </g>
+  
+  <!-- Alt kısım - Yaş grubu ve kategori -->
+  <g transform="translate(512, 460)">
+    <rect x="-250" y="-25" width="180" height="40" fill="white" opacity="0.2" rx="20"/>
+    <text x="-160" y="0" font-family="Arial, sans-serif" font-size="22" font-weight="bold"
+          fill="#ffffff" text-anchor="middle" dominant-baseline="middle">5-8 YAŞ</text>
+    
+    <rect x="-50" y="-25" width="180" height="40" fill="white" opacity="0.2" rx="20"/>
+    <text x="40" y="0" font-family="Arial, sans-serif" font-size="22" font-weight="bold"
+          fill="#ffffff" text-anchor="middle" dominant-baseline="middle">EĞİTİM</text>
+    
+    <rect x="150" y="-25" width="180" height="40" fill="white" opacity="0.2" rx="20"/>
+    <text x="240" y="0" font-family="Arial, sans-serif" font-size="22" font-weight="bold"
+          fill="#ffffff" text-anchor="middle" dominant-baseline="middle">ÜCRETSIZ</text>
+  </g>
+  
+  <!-- Dekoratif yıldızlar (ön plan) -->
+  <g opacity="0.8">
+    <polygon points="450,80 456,92 469,92 459,100 462,113 450,105 438,113 441,100 431,92 444,92" 
+             fill="#FFD93D"/>
+    <polygon points="574,80 580,92 593,92 583,100 586,113 574,105 562,113 565,100 555,92 568,92" 
+             fill="#FFD93D"/>
+  </g>
+</svg>

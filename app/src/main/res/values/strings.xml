@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">İlkokuluncu</string>
+    <string name="game_clock_title">Saat Okuma</string>
+    <string name="game_clock_desc">Saatleri öğren ve eğlen!</string>
+    <string name="game_half_hours_title">Yarım Saatler</string>
+    <string name="game_half_hours_desc">Yakında açılacak!</string>
+    <string name="game_minutes_title">Dakika Ustası</string>
+    <string name="game_minutes_desc">Yakında açılacak!</string>
+    <string name="loading">Yükleniyor...</string>
+    <string name="downloading">İndiriliyor...</string>
+    <string name="back">Geri</string>
+    <string name="score">Puan</string>
+    <string name="level">Level</string>
+    <string name="correct">Doğru</string>
+    <string name="test_title">Level 2\'ye Geçiş Testi!</string>
+    <string name="test_description">10 soruya en az 7 doğru cevap vermen gerekiyor!</string>
+    <string name="question">Soru</string>
+    <string name="congratulations">Tebrikler!</string>
+    <string name="try_again">Tekrar Dene</string>
+    <string name="continue_text">Devam Et</string>
+</resources>

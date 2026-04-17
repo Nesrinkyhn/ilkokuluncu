@@ -1,0 +1,108 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient arka plan -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="clock-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF8DC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFE082;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Arka plan -->
+  <rect width="512" height="512" fill="url(#bg-gradient)" rx="80"/>
+  
+  <!-- Dekoratif yıldızlar -->
+  <g opacity="0.2">
+    <circle cx="80" cy="80" r="30" fill="white"/>
+    <circle cx="432" cy="80" r="25" fill="white"/>
+    <circle cx="80" cy="432" r="25" fill="white"/>
+    <circle cx="432" cy="432" r="30" fill="white"/>
+  </g>
+  
+  <!-- Ana saat -->
+  <g transform="translate(256, 240)" filter="url(#shadow)">
+    <!-- Saat dış çerçeve (beyaz) -->
+    <circle cx="0" cy="0" r="145" fill="white"/>
+    
+    <!-- Saat yüzeyi (sarı gradyan) -->
+    <circle cx="0" cy="0" r="130" fill="url(#clock-gradient)"/>
+    
+    <!-- Saat işaretleri -->
+    <g stroke="#333333" stroke-width="4" stroke-linecap="round">
+      <!-- 12 -->
+      <line x1="0" y1="-110" x2="0" y2="-95"/>
+      <!-- 3 -->
+      <line x1="110" y1="0" x2="95" y2="0"/>
+      <!-- 6 -->
+      <line x1="0" y1="110" x2="0" y2="95"/>
+      <!-- 9 -->
+      <line x1="-110" y1="0" x2="-95" y2="0"/>
+      
+      <!-- 1, 2, 4, 5, 7, 8, 10, 11 (küçük işaretler) -->
+      <line x1="55" y1="-95" x2="48" y2="-83" stroke-width="2"/>
+      <line x1="95" y1="-55" x2="83" y2="-48" stroke-width="2"/>
+      <line x1="95" y1="55" x2="83" y2="48" stroke-width="2"/>
+      <line x1="55" y1="95" x2="48" y2="83" stroke-width="2"/>
+      <line x1="-55" y1="95" x2="-48" y2="83" stroke-width="2"/>
+      <line x1="-95" y1="55" x2="-83" y2="48" stroke-width="2"/>
+      <line x1="-95" y1="-55" x2="-83" y2="-48" stroke-width="2"/>
+      <line x1="-55" y1="-95" x2="-48" y2="-83" stroke-width="2"/>
+    </g>
+    
+    <!-- Rakamlar -->
+    <text x="0" y="-75" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+          fill="#E74C3C" text-anchor="middle" dominant-baseline="middle">12</text>
+    <text x="75" y="10" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+          fill="#3498DB" text-anchor="middle" dominant-baseline="middle">3</text>
+    <text x="0" y="85" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+          fill="#2ECC71" text-anchor="middle" dominant-baseline="middle">6</text>
+    <text x="-75" y="10" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+          fill="#F39C12" text-anchor="middle" dominant-baseline="middle">9</text>
+    
+    <!-- Akrep (3'ü gösteriyor) -->
+    <line x1="0" y1="0" x2="60" y2="0" stroke="#E74C3C" stroke-width="8" stroke-linecap="round"/>
+    
+    <!-- Yelkovan (12'yi gösteriyor) -->
+    <line x1="0" y1="0" x2="0" y2="-85" stroke="#3498DB" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- Merkez nokta -->
+    <circle cx="0" cy="0" r="8" fill="#333333"/>
+  </g>
+  
+  <!-- Kalem simgesi (sağ alt köşe) -->
+  <g transform="translate(380, 380)">
+    <rect x="-15" y="-50" width="30" height="50" fill="#FF6B6B" rx="3"/>
+    <polygon points="-15,0 15,0 7,15 -7,15" fill="#FFA07A"/>
+    <rect x="-15" y="-55" width="30" height="8" fill="#FFD93D" rx="2"/>
+    <circle cx="-8" cy="-38" r="3" fill="#ffffff" opacity="0.6"/>
+  </g>
+  
+  <!-- Yıldız dekorasyon (sol üst) -->
+  <g transform="translate(120, 120)">
+    <polygon points="0,-20 6,-6 20,-6 9,3 12,18 0,10 -12,18 -9,3 -20,-6 -6,-6" 
+             fill="#FFD93D" opacity="0.9"/>
+  </g>
+  
+  <!-- Yıldız dekorasyon (sağ üst) -->
+  <g transform="translate(392, 120)">
+    <polygon points="0,-15 4.5,-4.5 15,-4.5 6.75,2.25 9,13.5 0,7.5 -9,13.5 -6.75,2.25 -15,-4.5 -4.5,-4.5" 
+             fill="#FFD93D" opacity="0.9"/>
+  </g>
+  
+  <!-- Başlık alanı (alt kısım) -->
+  <rect x="0" y="380" width="512" height="132" fill="#ffffff" opacity="0.15" rx="0"/>
+  
+  <!-- Uygulama adı -->
+  <text x="256" y="450" font-family="Arial, sans-serif" font-size="64" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle" dominant-baseline="middle">
+    İlkokuluncu
+  </text>
+</svg>
