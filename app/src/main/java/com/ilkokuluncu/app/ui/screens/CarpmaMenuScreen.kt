@@ -84,8 +84,8 @@ fun CarpmaMenuScreen(
             // ── Oyun kartı: Çarpışan Balonlar ─────────────────────────────────
             CarpmaGameCard(
                 emoji       = "🎈",
-                title       = "Çarpışan Balonlar",
-                description = "Uçan balonlara dokunarak çarpma işlemlerini çöz!",
+                title       = "Çarpışan Balonlar (en yüksek 5)",
+                description = "Balonlara dokunarak çarpma işlemlerini çöz!",
                 color1      = Color(0xFFFF6D00),
                 color2      = Color(0xFFFFAB40),
                 onClick     = onGameClick

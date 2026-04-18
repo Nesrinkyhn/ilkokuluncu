@@ -36,6 +36,7 @@ data class MultiplicationGameState(
     val timeLeft: Float               = 10f,
     val wrongBallId: Int?             = null,
     val correctFlashBallId: Int?      = null,
+    val selectedBallId: Int?          = null,   // tıklanan uçan balon (sayı göster + yukarı çık)
     val bestScore: Int                = 0,
     val isNewBest: Boolean            = false
 )

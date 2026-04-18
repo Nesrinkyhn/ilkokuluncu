@@ -31,9 +31,16 @@ import com.ilkokuluncu.app.data.ClockPlacementEvent
 import com.ilkokuluncu.app.ui.screens.QuarterGameScreen
 import com.ilkokuluncu.app.ui.screens.MatchGameScreen
 import com.ilkokuluncu.app.ui.screens.TimeCalcGameScreen
-import com.ilkokuluncu.app.ui.screens.CarpmaMenuScreen
 import com.ilkokuluncu.app.ui.screens.MultiplicationBallGameScreen
+import com.ilkokuluncu.app.ui.screens.PatternBalloonGameScreen
+import com.ilkokuluncu.app.ui.screens.PatternPuzzleScreen
+import com.ilkokuluncu.app.ui.screens.MarioGameScreen
 import com.ilkokuluncu.app.viewmodel.MultiplicationGameViewModel
+import com.ilkokuluncu.app.viewmodel.PatternGameViewModel
+import com.ilkokuluncu.app.viewmodel.PatternPuzzleViewModel
+import com.ilkokuluncu.app.viewmodel.MarioGameViewModel
+import com.ilkokuluncu.app.data.PatternGameEvent
+import com.ilkokuluncu.app.data.MarioEvent
 import com.ilkokuluncu.app.viewmodel.MatchGameViewModel
 import com.ilkokuluncu.app.viewmodel.TimeCalcGameViewModel
 import com.ilkokuluncu.app.data.ClockGameEvent
@@ -57,6 +64,9 @@ class MainActivity : ComponentActivity() {
     private val matchGameViewModel:      MatchGameViewModel      by viewModels()
     private val timeCalcGameViewModel:       TimeCalcGameViewModel       by viewModels()
     private val multiplicationGameViewModel: MultiplicationGameViewModel by viewModels()
+    private val patternGameViewModel:        PatternGameViewModel        by viewModels()
+    private val patternPuzzleViewModel:      PatternPuzzleViewModel      by viewModels()
+    private val marioGameViewModel:           MarioGameViewModel          by viewModels()
 
     lateinit var adManager: AdManager
 
@@ -389,13 +399,8 @@ class MainActivity : ComponentActivity() {
                                         }
                                     )
                                 }
-                                destination.moduleId == "matematik" && destination.levelId == "math_multiplication" -> {
-                                    CarpmaMenuScreen(
-                                        onGameClick = { mainViewModel.navigateToLevel("matematik", "carpisan_balonlar") },
-                                        onBackPress = { mainViewModel.navigateBack() }
-                                    )
-                                }
-                                destination.moduleId == "matematik" && destination.levelId == "carpisan_balonlar" -> {
+                                // ── Çarpma ──────────────────────────────────────
+                                destination.moduleId == "carpma" && destination.levelId == "math_multiplication" -> {
                                     val multiState by multiplicationGameViewModel.state.collectAsState()
                                     LaunchedEffect(destination) {
                                         multiplicationGameViewModel.startFresh()
@@ -403,6 +408,41 @@ class MainActivity : ComponentActivity() {
                                     MultiplicationBallGameScreen(
                                         state       = multiState,
                                         onEvent     = { multiplicationGameViewModel.onEvent(it) },
+                                        onBackPress = { mainViewModel.navigateBack() }
+                                    )
+                                }
+                                // ── Örüntüler ────────────────────────────────────
+                                destination.moduleId == "oruntuler" && destination.levelId == "math_patterns" -> {
+                                    val patternState by patternGameViewModel.state.collectAsState()
+                                    LaunchedEffect(destination) {
+                                        patternGameViewModel.startFresh()
+                                    }
+                                    PatternBalloonGameScreen(
+                                        state       = patternState,
+                                        onEvent     = { patternGameViewModel.onEvent(it) },
+                                        onBackPress = { mainViewModel.navigateBack() }
+                                    )
+                                }
+                                destination.moduleId == "oruntuler" && destination.levelId == "math_pattern_puzzle" -> {
+                                    val puzzleState by patternPuzzleViewModel.state.collectAsState()
+                                    LaunchedEffect(destination) {
+                                        patternPuzzleViewModel.startFresh()
+                                    }
+                                    PatternPuzzleScreen(
+                                        state       = puzzleState,
+                                        onEvent     = { patternPuzzleViewModel.onEvent(it) },
+                                        onBackPress = { mainViewModel.navigateBack() }
+                                    )
+                                }
+                                // ── Mantar Platformer ────────────────────────────
+                                destination.moduleId == "mantar" -> {
+                                    val marioState by marioGameViewModel.state.collectAsState()
+                                    LaunchedEffect(destination) {
+                                        marioGameViewModel.startFresh()
+                                    }
+                                    MarioGameScreen(
+                                        state       = marioState,
+                                        onEvent     = { marioGameViewModel.onEvent(it) },
                                         onBackPress = { mainViewModel.navigateBack() }
                                     )
                                 }

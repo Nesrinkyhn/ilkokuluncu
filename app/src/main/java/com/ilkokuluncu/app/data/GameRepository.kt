@@ -66,12 +66,12 @@ class GameRepository {
                 )
             ),
 
-            // ── Matematik – çarpma işlemleri ──────────────────────────────────
+            // ── Çarpma ────────────────────────────────────────────────────────
             GameModule(
-                id          = "matematik",
-                title       = "Matematik",
-                description = "Çarpma işlemlerini eğlenceli oyunlarla öğren!",
-                icon        = "🔢",
+                id          = "carpma",
+                title       = "Çarpma",
+                description = "Çarpma işlemlerini eğlenceli balonlarla öğren!",
+                icon        = "✖️",
                 isInstalled = true,
                 version     = "1.0",
                 sizeInMB    = 0f,
@@ -79,9 +79,62 @@ class GameRepository {
                     GameLevel(
                         id            = "math_multiplication",
                         levelNumber   = 1,
-                        title         = "Çarpma",
+                        title         = "Çarpışan Balonlar",
                         description   = "2×3, 4×5 gibi çarpma işlemlerini öğren!",
-                        icon          = "✖️",
+                        icon          = "🎯",
+                        isUnlocked    = true,
+                        requiredScore = 0
+                    )
+                )
+            ),
+
+            // ── Örüntüler ─────────────────────────────────────────────────────
+            GameModule(
+                id          = "oruntuler",
+                title       = "Örüntüler",
+                description = "Sayı örüntülerini keşfet ve boşlukları doldur!",
+                icon        = "🔢",
+                isInstalled = true,
+                version     = "1.0",
+                sizeInMB    = 0f,
+                levels      = listOf(
+                    GameLevel(
+                        id            = "math_patterns",
+                        levelNumber   = 1,
+                        title         = "Uçan Gaz Balonları",
+                        description   = "2'ler, 3'ler, 4'ler, 5'ler! Doğru balonları yakala!",
+                        icon          = "🎈",
+                        isUnlocked    = true,
+                        requiredScore = 0
+                    ),
+                    GameLevel(
+                        id            = "math_pattern_puzzle",
+                        levelNumber   = 2,
+                        title         = "Boşluklara Sürükle",
+                        description   = "Boşluklara doğru sayıyı sürükleyip bırak! 30 soru, 300 saniye.",
+                        icon          = "🧩",
+                        isUnlocked    = true,
+                        requiredScore = 0
+                    )
+                )
+            ),
+
+            // ── Mantar Yakalama ───────────────────────────────────────────────
+            GameModule(
+                id          = "mantar",
+                title       = "Mantar Yakalama",
+                description = "Düşen mantarları yakala, toplama çıkarma öğren!",
+                icon        = "🍄",
+                isInstalled = true,
+                version     = "1.0",
+                sizeInMB    = 0f,
+                levels      = listOf(
+                    GameLevel(
+                        id            = "mantar_toplama",
+                        levelNumber   = 1,
+                        title         = "Toplama",
+                        description   = "Doğru toplamı veren mantarları yakala!",
+                        icon          = "➕",
                         isUnlocked    = true,
                         requiredScore = 0
                     )

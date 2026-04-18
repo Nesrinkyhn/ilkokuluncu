@@ -54,6 +54,7 @@ class MultiplicationGameViewModel(application: Application) : AndroidViewModel(a
             answerBalls        = emptyList(),
             wrongBallId        = null,
             correctFlashBallId = null,
+            selectedBallId     = null,
             timeLeft           = 10f
         )
     }
@@ -64,11 +65,12 @@ class MultiplicationGameViewModel(application: Application) : AndroidViewModel(a
         val first = _state.value.firstNumber ?: 2
         val pool  = if (first > 5) smallRange else fullRange
         _state.value = _state.value.copy(
-            phase         = MultiplicationPhase.PICK_SECOND,
-            secondNumber  = null,
-            floatingBalls = makeFloatingBalls(pool),
-            answerBalls   = emptyList(),
-            wrongBallId   = null
+            phase          = MultiplicationPhase.PICK_SECOND,
+            secondNumber   = null,
+            floatingBalls  = makeFloatingBalls(pool),
+            answerBalls    = emptyList(),
+            wrongBallId    = null,
+            selectedBallId = null
         )
     }
 
@@ -91,15 +93,24 @@ class MultiplicationGameViewModel(application: Application) : AndroidViewModel(a
     private fun onFloatingBallTapped(ballId: Int) {
         val s    = _state.value
         val ball = s.floatingBalls.find { it.id == ballId } ?: return
+        // Zaten seçili ise tekrar işlem yapma
+        if (s.selectedBallId != null) return
 
         when (s.phase) {
             MultiplicationPhase.PICK_FIRST -> {
-                _state.value = s.copy(firstNumber = ball.value)
-                generatePickSecond()
+                // Önce sayıyı göster + yukarı çık animasyonu, 550ms sonra geçiş
+                _state.value = s.copy(firstNumber = ball.value, selectedBallId = ballId)
+                viewModelScope.launch {
+                    delay(550)
+                    generatePickSecond()
+                }
             }
             MultiplicationPhase.PICK_SECOND -> {
-                _state.value = s.copy(secondNumber = ball.value)
-                generateAnswerPhase()
+                _state.value = s.copy(secondNumber = ball.value, selectedBallId = ballId)
+                viewModelScope.launch {
+                    delay(550)
+                    generateAnswerPhase()
+                }
             }
             else -> Unit
         }
@@ -204,9 +215,12 @@ class MultiplicationGameViewModel(application: Application) : AndroidViewModel(a
     }
 
     // ── Balon üreticiler ──────────────────────────────────────────────────────
-    private val xStartPool = listOf(0.05f, 0.35f, 0.68f, 0.15f, 0.52f, 0.82f)
-    private val yStartPool = listOf(0.12f, 0.55f, 0.22f, 0.70f, 0.38f, 0.62f)
-    private val xSpeeds    = listOf(3400, 4000, 2900, 3700, 4300, 3100)
+    // Her balon tam ekranı kat etsin: başlangıç ve bitiş noktaları birbirinin zıttında
+    private val xStartPool = listOf(0.02f, 0.88f, 0.05f, 0.80f, 0.45f, 0.15f)
+    private val xEndPool   = listOf(0.88f, 0.02f, 0.82f, 0.08f, 0.90f, 0.75f)
+    private val yStartPool = listOf(0.05f, 0.70f, 0.45f, 0.10f, 0.80f, 0.30f)
+    private val yEndPool   = listOf(0.80f, 0.05f, 0.90f, 0.75f, 0.08f, 0.82f)
+    private val xSpeeds    = listOf(3400, 4100, 2900, 3700, 4300, 3100)
     private val ySpeeds    = listOf(2800, 3800, 4100, 3200, 4400, 3000)
 
     private fun makeFloatingBalls(pool: List<Int> = fullRange): List<MultBall> {
@@ -217,7 +231,9 @@ class MultiplicationGameViewModel(application: Application) : AndroidViewModel(a
                 value      = n,
                 colorIndex = i,
                 xStart     = xStartPool[i],
+                xEnd       = xEndPool[i],
                 yStart     = yStartPool[i],
+                yEnd       = yEndPool[i],
                 xSpeed     = xSpeeds[i],
                 ySpeed     = ySpeeds[i]
             )
@@ -232,9 +248,11 @@ class MultiplicationGameViewModel(application: Application) : AndroidViewModel(a
             val w = correct + offset
             if (w > 0 && w !in attempts) { wrongs.add(w); attempts.add(w) }
         }
-        val options  = (listOf(correct) + wrongs).shuffled()
-        val xStarts  = listOf(0.08f, 0.38f, 0.68f)
-        val yStarts  = listOf(0.60f, 0.52f, 0.60f)
+        val options   = (listOf(correct) + wrongs).shuffled()
+        val xStarts   = listOf(0.03f, 0.35f, 0.68f)
+        val xEnds     = listOf(0.72f, 0.05f, 0.25f)
+        val yStarts   = listOf(0.15f, 0.65f, 0.20f)
+        val yEnds     = listOf(0.80f, 0.08f, 0.78f)
         val colorIdxs = listOf(2, 5, 8)
 
         return options.mapIndexed { i, v ->
@@ -243,7 +261,9 @@ class MultiplicationGameViewModel(application: Application) : AndroidViewModel(a
                 value      = v,
                 colorIndex = colorIdxs[i],
                 xStart     = xStarts[i],
+                xEnd       = xEnds[i],
                 yStart     = yStarts[i],
+                yEnd       = yEnds[i],
                 xSpeed     = 5500 + i * 800,
                 ySpeed     = 4800 + i * 700,
                 isCorrect  = v == correct

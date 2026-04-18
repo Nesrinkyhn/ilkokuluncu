@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -75,7 +76,7 @@ fun MultiplicationBallGameScreen(
                     val areaW = constraints.maxWidth.toFloat()
                     val areaH = constraints.maxHeight.toFloat()
 
-                    // Uçan balonlar (Faz 1 ve 2) — sayı GİZLİ, sadece 🎈 görünür
+                    // Uçan balonlar (Faz 1 ve 2) — sayı GİZLİ (tıklayınca görünür + yukarı çıkar)
                     state.floatingBalls.forEach { ball ->
                         key(ball.id) {
                             FloatingBallItem(
@@ -84,7 +85,8 @@ fun MultiplicationBallGameScreen(
                                 areaH      = areaH,
                                 ballSizePx = with(LocalDensity.current) { 76.dp.toPx() },
                                 isWrong    = ball.id == state.wrongBallId,
-                                showValue  = false,   // ← sayı gizli
+                                isSelected = ball.id == state.selectedBallId,
+                                showValue  = false,   // ← sayı gizli (isSelected ile override olur)
                                 onTap      = { onEvent(MultiplicationGameEvent.FloatingBallTapped(ball.id)) }
                             )
                         }
@@ -172,12 +174,20 @@ fun GameHeaderBar(state: MultiplicationGameState, onBackPress: () -> Unit) {
 
         Spacer(Modifier.width(8.dp))
 
-        // Lolipoplar (canlar)
-        val lifeEmojis = buildString {
-            repeat(state.lives)         { append("🍭") }
-            repeat(5 - state.lives)     { append("💀") }
+        // Lolipoplar (canlar): dolu 🍭 / boş = soluk + ❌
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            repeat(5) { i ->
+                if (i < state.lives) {
+                    Text("🍭", fontSize = 18.sp)
+                } else {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text("🍭", fontSize = 18.sp,
+                            modifier = Modifier.graphicsLayer { alpha = 0.22f })
+                        Text("❌", fontSize = 11.sp)
+                    }
+                }
+            }
         }
-        Text(lifeEmojis, fontSize = 18.sp)
 
         Spacer(Modifier.weight(1f))
 
@@ -299,14 +309,16 @@ fun FloatingBallItem(
     ballSizePx: Float,
     isWrong: Boolean,
     isCorrectFlash: Boolean = false,
+    isSelected: Boolean = false,   // tıklandı → sayıyı göster + yukarı çık
     showValue: Boolean = true,
     onTap: () -> Unit
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "ball_${ball.id}")
 
+    // Tam ekranı kat et: xStart → xEnd
     val x by infiniteTransition.animateFloat(
         initialValue = ball.xStart * (areaW - ballSizePx),
-        targetValue  = (1f - ball.xStart) * (areaW - ballSizePx),
+        targetValue  = ball.xEnd   * (areaW - ballSizePx),
         animationSpec = infiniteRepeatable(
             animation  = tween(ball.xSpeed, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
@@ -316,7 +328,7 @@ fun FloatingBallItem(
 
     val y by infiniteTransition.animateFloat(
         initialValue = ball.yStart * (areaH - ballSizePx),
-        targetValue  = (1f - ball.yStart) * (areaH - ballSizePx),
+        targetValue  = ball.yEnd   * (areaH - ballSizePx),
         animationSpec = infiniteRepeatable(
             animation  = tween(ball.ySpeed, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
@@ -324,9 +336,17 @@ fun FloatingBallItem(
         label = "y_${ball.id}"
     )
 
+    // Seçilince yukarı doğru yüksel
+    val riseOffset by animateFloatAsState(
+        targetValue   = if (isSelected) -260f else 0f,
+        animationSpec = tween(durationMillis = 480, easing = FastOutSlowInEasing),
+        label         = "rise_${ball.id}"
+    )
+
     val baseColor = ballColor(ball.colorIndex)
     val bgColor by animateColorAsState(
         targetValue = when {
+            isSelected     -> Color(0xFF00E676)
             isWrong        -> Color(0xFFFF1744)
             isCorrectFlash -> Color(0xFF00E676)
             else           -> baseColor
@@ -336,23 +356,26 @@ fun FloatingBallItem(
     )
 
     val sizeDp = with(LocalDensity.current) { ballSizePx.toDp() }
+    val displayValue = showValue || isSelected   // seçilince her zaman sayıyı göster
 
     Box(
         modifier = Modifier
-            .offset { IntOffset(x.toInt(), y.toInt()) }
+            .offset { IntOffset(x.toInt(), (y + riseOffset).toInt()) }
             .size(sizeDp)
             .shadow(6.dp, CircleShape)
             .clip(CircleShape)
             .background(bgColor)
-            .clickable(onClick = onTap),
+            .clickable(enabled = !isSelected, onClick = onTap),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text       = if (showValue) "${ball.value}" else "🎈",
-            fontSize   = if (showValue) (if (sizeDp > 80.dp) 30.sp else 26.sp) else 28.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color      = if (showValue) textOnBall(ball.colorIndex) else Color.White
-        )
+        if (displayValue) {
+            Text(
+                text       = "${ball.value}",
+                fontSize   = if (sizeDp > 80.dp) 30.sp else 26.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color      = textOnBall(ball.colorIndex)
+            )
+        }
     }
 }
 
@@ -374,7 +397,7 @@ fun GameOverOverlay(score: Int, onRetry: () -> Unit, onBack: () -> Unit) {
                 .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("💀", fontSize = 64.sp)
+            Text("😢", fontSize = 64.sp)
             Spacer(Modifier.height(12.dp))
             Text("Canlar Bitti!", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
             Spacer(Modifier.height(8.dp))
