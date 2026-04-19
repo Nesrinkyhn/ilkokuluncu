@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ilkokuluncu.app.data.*
+import com.ilkokuluncu.app.ui.effects.GameBackgroundMusic
+import com.ilkokuluncu.app.ui.effects.rememberSoundEffectPlayer
 import kotlin.math.roundToInt
 
 private val CHAR_COLORS = listOf(
@@ -41,6 +43,31 @@ fun PatternPuzzleScreen(
     onEvent: (PatternPuzzleEvent) -> Unit,
     onBackPress: () -> Unit
 ) {
+    // ── Arka plan müziği ──────────────────────────────────────────────────────
+    GameBackgroundMusic()
+
+    // ── Ses efektleri ─────────────────────────────────────────────────────────
+    val sfx = rememberSoundEffectPlayer()
+
+    // Doğru slota bırakıldı (yeşil flash)
+    LaunchedEffect(state.flashCorrectSlot) {
+        if (state.flashCorrectSlot != null) sfx.playCorrect()
+    }
+
+    // Yanlış slota bırakıldı (kırmızı flash)
+    LaunchedEffect(state.flashWrongSlot) {
+        if (state.flashWrongSlot != null) sfx.playWrongWithVibration()
+    }
+
+    // Oyun sonu
+    LaunchedEffect(state.phase) {
+        when (state.phase) {
+            PuzzlePh.VICTORY   -> sfx.playCorrect()
+            PuzzlePh.GAME_OVER -> sfx.playWrongWithVibration()
+            else -> Unit
+        }
+    }
+
     // Soru değişince sürükleme sıfırlansın
     var draggedId by remember(state.questionIndex) { mutableStateOf<Int?>(null) }
     var dragPos   by remember(state.questionIndex) { mutableStateOf(Offset.Zero) }

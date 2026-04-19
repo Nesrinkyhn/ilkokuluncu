@@ -35,12 +35,26 @@ import com.ilkokuluncu.app.ui.screens.MultiplicationBallGameScreen
 import com.ilkokuluncu.app.ui.screens.PatternBalloonGameScreen
 import com.ilkokuluncu.app.ui.screens.PatternPuzzleScreen
 import com.ilkokuluncu.app.ui.screens.MarioGameScreen
+import com.ilkokuluncu.app.ui.screens.GoldRunScreen
+import com.ilkokuluncu.app.ui.screens.CarpmaMenuScreen
+import com.ilkokuluncu.app.ui.screens.CarpmaOyunlarScreen
+import com.ilkokuluncu.app.ui.screens.RitmikSaymaMenuScreen
+import com.ilkokuluncu.app.ui.screens.Ritmik2Screen
+import com.ilkokuluncu.app.ui.screens.Ritmik3Screen
+import com.ilkokuluncu.app.ui.screens.Ritmik4Screen
+import com.ilkokuluncu.app.ui.screens.Ritmik5Screen
 import com.ilkokuluncu.app.viewmodel.MultiplicationGameViewModel
 import com.ilkokuluncu.app.viewmodel.PatternGameViewModel
 import com.ilkokuluncu.app.viewmodel.PatternPuzzleViewModel
 import com.ilkokuluncu.app.viewmodel.MarioGameViewModel
+import com.ilkokuluncu.app.viewmodel.GoldRunViewModel
+import com.ilkokuluncu.app.viewmodel.Ritmik2ViewModel
+import com.ilkokuluncu.app.viewmodel.Ritmik3ViewModel
+import com.ilkokuluncu.app.viewmodel.Ritmik4ViewModel
+import com.ilkokuluncu.app.viewmodel.Ritmik5ViewModel
 import com.ilkokuluncu.app.data.PatternGameEvent
 import com.ilkokuluncu.app.data.MarioEvent
+import com.ilkokuluncu.app.data.GoldRunEvent
 import com.ilkokuluncu.app.viewmodel.MatchGameViewModel
 import com.ilkokuluncu.app.viewmodel.TimeCalcGameViewModel
 import com.ilkokuluncu.app.data.ClockGameEvent
@@ -67,6 +81,11 @@ class MainActivity : ComponentActivity() {
     private val patternGameViewModel:        PatternGameViewModel        by viewModels()
     private val patternPuzzleViewModel:      PatternPuzzleViewModel      by viewModels()
     private val marioGameViewModel:           MarioGameViewModel          by viewModels()
+    private val goldRunViewModel:             GoldRunViewModel            by viewModels()
+    private val ritmik2ViewModel:             Ritmik2ViewModel            by viewModels()
+    private val ritmik3ViewModel:             Ritmik3ViewModel            by viewModels()
+    private val ritmik4ViewModel:             Ritmik4ViewModel            by viewModels()
+    private val ritmik5ViewModel:             Ritmik5ViewModel            by viewModels()
 
     lateinit var adManager: AdManager
 
@@ -132,6 +151,77 @@ class MainActivity : ComponentActivity() {
                     }
 
                     when (val destination = currentDestination) {
+
+                        // ── Çarpma menüleri ──────────────────────────────────
+                        is NavigationDestination.CarpmaMenu -> {
+                            CarpmaMenuScreen(
+                                onRitmikSaymaClick = { mainViewModel.navigateToRitmikSaymaMenu() },
+                                onOyunlarClick     = { mainViewModel.navigateToCarpmaOyunlar() },
+                                onBackPress        = { mainViewModel.navigateToMainMenu() }
+                            )
+                        }
+
+                        is NavigationDestination.CarpmaOyunlar -> {
+                            CarpmaOyunlarScreen(
+                                onBalloonGameClick = {
+                                    mainViewModel.navigateToLevel("carpma", "math_multiplication")
+                                },
+                                onGoldRunClick = {
+                                    mainViewModel.navigateToLevel("carpma", "gold_run")
+                                },
+                                onBackPress = { mainViewModel.navigateToCarpmaMenu() }
+                            )
+                        }
+
+                        is NavigationDestination.RitmikSaymaMenu -> {
+                            RitmikSaymaMenuScreen(
+                                onLevel1Click = { mainViewModel.navigateToRitmik2() },
+                                onLevel2Click = { mainViewModel.navigateToRitmik3() },
+                                onLevel3Click = { mainViewModel.navigateToRitmik4() },
+                                onLevel4Click = { mainViewModel.navigateToRitmik5() },
+                                onBackPress   = { mainViewModel.navigateToCarpmaMenu() }
+                            )
+                        }
+
+                        is NavigationDestination.Ritmik2Game -> {
+                            val ritmik2State by ritmik2ViewModel.state.collectAsState()
+                            LaunchedEffect(destination) { ritmik2ViewModel.startFresh() }
+                            Ritmik2Screen(
+                                state       = ritmik2State,
+                                viewModel   = ritmik2ViewModel,
+                                onBackPress = { mainViewModel.navigateToRitmikSaymaMenu() }
+                            )
+                        }
+
+                        is NavigationDestination.Ritmik3Game -> {
+                            val ritmik3State by ritmik3ViewModel.state.collectAsState()
+                            LaunchedEffect(destination) { ritmik3ViewModel.startFresh() }
+                            Ritmik3Screen(
+                                state       = ritmik3State,
+                                viewModel   = ritmik3ViewModel,
+                                onBackPress = { mainViewModel.navigateToRitmikSaymaMenu() }
+                            )
+                        }
+
+                        is NavigationDestination.Ritmik4Game -> {
+                            val ritmik4State by ritmik4ViewModel.state.collectAsState()
+                            LaunchedEffect(destination) { ritmik4ViewModel.startFresh() }
+                            Ritmik4Screen(
+                                state       = ritmik4State,
+                                viewModel   = ritmik4ViewModel,
+                                onBackPress = { mainViewModel.navigateToRitmikSaymaMenu() }
+                            )
+                        }
+
+                        is NavigationDestination.Ritmik5Game -> {
+                            val ritmik5State by ritmik5ViewModel.state.collectAsState()
+                            LaunchedEffect(destination) { ritmik5ViewModel.startFresh() }
+                            Ritmik5Screen(
+                                state       = ritmik5State,
+                                viewModel   = ritmik5ViewModel,
+                                onBackPress = { mainViewModel.navigateToRitmikSaymaMenu() }
+                            )
+                        }
 
                         is NavigationDestination.MainMenu -> {
                             MainMenuScreen(
@@ -399,7 +489,7 @@ class MainActivity : ComponentActivity() {
                                         }
                                     )
                                 }
-                                // ── Çarpma ──────────────────────────────────────
+                                // ── Çarpma: Çarpışan Balonlar ────────────────────
                                 destination.moduleId == "carpma" && destination.levelId == "math_multiplication" -> {
                                     val multiState by multiplicationGameViewModel.state.collectAsState()
                                     LaunchedEffect(destination) {
@@ -409,6 +499,19 @@ class MainActivity : ComponentActivity() {
                                         state       = multiState,
                                         onEvent     = { multiplicationGameViewModel.onEvent(it) },
                                         onBackPress = { mainViewModel.navigateBack() }
+                                    )
+                                }
+                                // ── Çarpma: Altınları Topla ───────────────────────
+                                destination.moduleId == "carpma" && destination.levelId == "gold_run" -> {
+                                    val goldState by goldRunViewModel.state.collectAsState()
+                                    LaunchedEffect(destination) {
+                                        goldRunViewModel.startFresh()
+                                    }
+                                    GoldRunScreen(
+                                        state       = goldState,
+                                        onEvent     = { goldRunViewModel.onEvent(it) },
+                                        onBackPress = { mainViewModel.navigateBack() },
+                                        viewModel   = goldRunViewModel
                                     )
                                 }
                                 // ── Örüntüler ────────────────────────────────────
@@ -434,16 +537,17 @@ class MainActivity : ComponentActivity() {
                                         onBackPress = { mainViewModel.navigateBack() }
                                     )
                                 }
-                                // ── Mantar Platformer ────────────────────────────
-                                destination.moduleId == "mantar" -> {
-                                    val marioState by marioGameViewModel.state.collectAsState()
+                                // ── Altınları Topla ──────────────────────────────
+                                destination.moduleId == "oyunlar" && destination.levelId == "gold_run" -> {
+                                    val goldState by goldRunViewModel.state.collectAsState()
                                     LaunchedEffect(destination) {
-                                        marioGameViewModel.startFresh()
+                                        goldRunViewModel.startFresh()
                                     }
-                                    MarioGameScreen(
-                                        state       = marioState,
-                                        onEvent     = { marioGameViewModel.onEvent(it) },
-                                        onBackPress = { mainViewModel.navigateBack() }
+                                    GoldRunScreen(
+                                        state       = goldState,
+                                        onEvent     = { goldRunViewModel.onEvent(it) },
+                                        onBackPress = { mainViewModel.navigateBack() },
+                                        viewModel   = goldRunViewModel
                                     )
                                 }
                                 else -> mainViewModel.navigateToMainMenu()

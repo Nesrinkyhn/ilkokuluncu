@@ -13,8 +13,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 sealed class NavigationDestination {
-    object MainMenu : NavigationDestination()
-    object Settings : NavigationDestination()
+    object MainMenu         : NavigationDestination()
+    object Settings         : NavigationDestination()
+    object CarpmaMenu       : NavigationDestination()   // Çarpma ana kartlar
+    object CarpmaOyunlar    : NavigationDestination()   // Oyunlar alt menü
+    object RitmikSaymaMenu  : NavigationDestination()   // Ritmik sayma alt menü
+    object Ritmik2Game      : NavigationDestination()   // 2'li Ritmik Sayma oyunu
+    object Ritmik3Game      : NavigationDestination()   // 3'ler Ritmik Sayma oyunu
+    object Ritmik4Game      : NavigationDestination()   // 4'ler Safari oyunu
+    object Ritmik5Game      : NavigationDestination()   // 5'ler Dondurma oyunu
     data class LevelSelection(val module: GameModule) : NavigationDestination()
     data class Game(val moduleId: String, val levelId: String) : NavigationDestination()
     data class TestGame(val moduleId: String, val levelId: String) : NavigationDestination()
@@ -96,6 +103,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun navigateToModule(moduleId: String) {
         viewModelScope.launch {
+            // Çarpma için özel menü
+            if (moduleId == "carpma") {
+                _currentDestination.value = NavigationDestination.CarpmaMenu
+                return@launch
+            }
             val module = repository.getModule(moduleId) ?: return@launch
             if (!module.isInstalled) {
                 repository.downloadModule(moduleId).onSuccess {
@@ -109,6 +121,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun navigateToCarpmaMenu()      { _currentDestination.value = NavigationDestination.CarpmaMenu }
+    fun navigateToCarpmaOyunlar()   { _currentDestination.value = NavigationDestination.CarpmaOyunlar }
+    fun navigateToRitmikSaymaMenu() { _currentDestination.value = NavigationDestination.RitmikSaymaMenu }
+    fun navigateToRitmik2()         { _currentDestination.value = NavigationDestination.Ritmik2Game }
+    fun navigateToRitmik3()         { _currentDestination.value = NavigationDestination.Ritmik3Game }
+    fun navigateToRitmik4()         { _currentDestination.value = NavigationDestination.Ritmik4Game }
+    fun navigateToRitmik5()         { _currentDestination.value = NavigationDestination.Ritmik5Game }
 
     fun navigateToLevel(moduleId: String, levelId: String) {
         _currentDestination.value = NavigationDestination.Game(moduleId, levelId)

@@ -33,6 +33,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ilkokuluncu.app.data.*
+import com.ilkokuluncu.app.ui.effects.GameBackgroundMusic
+import com.ilkokuluncu.app.ui.effects.rememberSoundEffectPlayer
 
 
 private val PLAYER_STRIPES = listOf(
@@ -70,6 +72,34 @@ fun PatternBalloonGameScreen(
 ) {
     val textMeasurer = rememberTextMeasurer()
 
+    // ── Arka plan müziği ──────────────────────────────────────────────────────
+    GameBackgroundMusic()
+
+    // ── Ses efektleri ─────────────────────────────────────────────────────────
+    val sfx = rememberSoundEffectPlayer()
+
+    // Puan arttı → doğru balon yakalandı
+    var prevScore by remember { mutableIntStateOf(state.score) }
+    LaunchedEffect(state.score) {
+        if (state.score > prevScore) sfx.playCorrect()
+        prevScore = state.score
+    }
+
+    // Can düştü → yanlış balon
+    var prevLives by remember { mutableIntStateOf(state.lives) }
+    LaunchedEffect(state.lives) {
+        if (state.lives < prevLives) sfx.playWrongWithVibration()
+        prevLives = state.lives
+    }
+
+    // Oyun sonu sesleri
+    LaunchedEffect(state.phase) {
+        when (state.phase) {
+            PatternGamePhase.VICTORY   -> sfx.playCorrect()
+            PatternGamePhase.GAME_OVER -> sfx.playWrongWithVibration()
+            else -> Unit
+        }
+    }
 
     val cloudDrift by rememberInfiniteTransition(label = "cloud").animateFloat(
         initialValue = 0f, targetValue = 1f,

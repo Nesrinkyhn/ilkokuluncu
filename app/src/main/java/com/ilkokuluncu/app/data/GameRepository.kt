@@ -70,23 +70,55 @@ class GameRepository {
             GameModule(
                 id          = "carpma",
                 title       = "Çarpma",
-                description = "Çarpma işlemlerini eğlenceli balonlarla öğren!",
+                description = "Ritmik sayma ve çarpma oyunlarıyla öğren!",
                 icon        = "✖️",
                 isInstalled = true,
                 version     = "1.0",
                 sizeInMB    = 0f,
                 levels      = listOf(
+                    // Oyunlar kartı
                     GameLevel(
                         id            = "math_multiplication",
                         levelNumber   = 1,
                         title         = "Çarpışan Balonlar",
-                        description   = "2×3, 4×5 gibi çarpma işlemlerini öğren!",
-                        icon          = "🎯",
+                        description   = "Balonlara dokunarak çarpma işlemlerini çöz!",
+                        icon          = "🎈",
                         isUnlocked    = true,
                         requiredScore = 0
+                    ),
+                    GameLevel(
+                        id            = "gold_run",
+                        levelNumber   = 2,
+                        title         = "Altınları Topla",
+                        description   = "Koş, zıpla, altınları topla!",
+                        icon          = "⚽",
+                        isUnlocked    = true,
+                        requiredScore = 0
+                    ),
+                    // Ritmik Sayma kartı
+                    GameLevel(
+                        id            = "ritmik_2",
+                        levelNumber   = 3,
+                        title         = "2'li Ritmik Sayma",
+                        description   = "2, 4, 6, 8… ikişer ikişer say!",
+                        icon          = "2️⃣",
+                        isUnlocked    = true,
+                        requiredScore = 0,
+                        isComingSoon  = true
+                    ),
+                    GameLevel(
+                        id            = "ritmik_3",
+                        levelNumber   = 4,
+                        title         = "3'ler",
+                        description   = "3, 6, 9, 12… üçer üçer say!",
+                        icon          = "3️⃣",
+                        isUnlocked    = true,
+                        requiredScore = 0,
+                        isComingSoon  = true
                     )
                 )
             ),
+
 
             // ── Örüntüler ─────────────────────────────────────────────────────
             GameModule(
@@ -119,27 +151,8 @@ class GameRepository {
                 )
             ),
 
-            // ── Mantar Yakalama ───────────────────────────────────────────────
-            GameModule(
-                id          = "mantar",
-                title       = "Mantar Yakalama",
-                description = "Düşen mantarları yakala, toplama çıkarma öğren!",
-                icon        = "🍄",
-                isInstalled = true,
-                version     = "1.0",
-                sizeInMB    = 0f,
-                levels      = listOf(
-                    GameLevel(
-                        id            = "mantar_toplama",
-                        levelNumber   = 1,
-                        title         = "Toplama",
-                        description   = "Doğru toplamı veren mantarları yakala!",
-                        icon          = "➕",
-                        isUnlocked    = true,
-                        requiredScore = 0
-                    )
-                )
-            )
+            // ── Oyunlar ───────────────────────────────────────────────────────
+
         )
     }
 

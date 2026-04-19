@@ -3,8 +3,10 @@ package com.ilkokuluncu.app.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -22,7 +24,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CarpmaMenuScreen(
-    onGameClick: () -> Unit,
+    onRitmikSaymaClick: () -> Unit,
+    onOyunlarClick: () -> Unit,
     onBackPress: () -> Unit
 ) {
     val bgGradient = Brush.verticalGradient(
@@ -34,11 +37,10 @@ fun CarpmaMenuScreen(
             .fillMaxSize()
             .background(bgGradient)
     ) {
-
         // ── Geri butonu ───────────────────────────────────────────────────────
         IconButton(
-            onClick   = onBackPress,
-            modifier  = Modifier
+            onClick  = onBackPress,
+            modifier = Modifier
                 .padding(12.dp)
                 .statusBarsPadding()
                 .align(Alignment.TopStart)
@@ -50,20 +52,17 @@ fun CarpmaMenuScreen(
         }
 
         Column(
-            modifier            = Modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Spacer(Modifier.height(72.dp))
 
             // ── Başlık ────────────────────────────────────────────────────────
-            Text(
-                text       = "✖️",
-                fontSize   = 64.sp
-            )
+            Text("✖️", fontSize = 64.sp)
             Spacer(Modifier.height(8.dp))
             Text(
                 text       = "Çarpma",
@@ -72,33 +71,50 @@ fun CarpmaMenuScreen(
                 color      = Color.White
             )
             Text(
-                text       = "Bir oyun seç ve çarpmayı öğren!",
-                fontSize   = 16.sp,
-                color      = Color.White.copy(alpha = 0.75f),
-                textAlign  = TextAlign.Center,
-                modifier   = Modifier.padding(top = 6.dp)
+                text      = "Ne öğrenmek istiyorsun?",
+                fontSize  = 16.sp,
+                color     = Color.White.copy(alpha = 0.75f),
+                textAlign = TextAlign.Center,
+                modifier  = Modifier.padding(top = 6.dp)
             )
 
-            Spacer(Modifier.height(48.dp))
+            Spacer(Modifier.height(40.dp))
 
-            // ── Oyun kartı: Çarpışan Balonlar ─────────────────────────────────
-            CarpmaGameCard(
-                emoji       = "🎈",
-                title       = "Çarpışan Balonlar (en yüksek 5)",
-                description = "Balonlara dokunarak çarpma işlemlerini çöz!",
+            // ── Kart 1: Ritmik Sayma ──────────────────────────────────────────
+            CarpmaTopCard(
+                emoji       = "🔢",
+                title       = "Ritmik Sayma",
+                description = "2'ler, 3'ler, 4'ler…\nRitmik sayarak çarpmanın temelini at!",
+                levelInfo   = "2 bölüm • 2'ler · 3'ler",
+                color1      = Color(0xFF00897B),
+                color2      = Color(0xFF26C6DA),
+                onClick     = onRitmikSaymaClick
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            // ── Kart 2: Oyunlar ───────────────────────────────────────────────
+            CarpmaTopCard(
+                emoji       = "🎮",
+                title       = "Oyunlar",
+                description = "Çarpma sorularını eğlenceli\noyunlarla çöz!",
+                levelInfo   = "2 bölüm • Balonlar · Altınlar",
                 color1      = Color(0xFFFF6D00),
                 color2      = Color(0xFFFFAB40),
-                onClick     = onGameClick
+                onClick     = onOyunlarClick
             )
+
+            Spacer(Modifier.height(32.dp))
         }
     }
 }
 
 @Composable
-private fun CarpmaGameCard(
+private fun CarpmaTopCard(
     emoji: String,
     title: String,
     description: String,
+    levelInfo: String,
     color1: Color,
     color2: Color,
     onClick: () -> Unit
@@ -112,12 +128,15 @@ private fun CarpmaGameCard(
             .clickable(onClick = onClick)
             .padding(28.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier            = Modifier.fillMaxWidth()
+        ) {
             Text(emoji, fontSize = 56.sp)
             Spacer(Modifier.height(12.dp))
             Text(
                 text       = title,
-                fontSize   = 26.sp,
+                fontSize   = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color      = Color.White,
                 textAlign  = TextAlign.Center
@@ -125,21 +144,37 @@ private fun CarpmaGameCard(
             Spacer(Modifier.height(8.dp))
             Text(
                 text       = description,
-                fontSize   = 14.sp,
-                color      = Color.White.copy(alpha = 0.9f),
+                fontSize   = 15.sp,
+                color      = Color.White.copy(alpha = 0.92f),
                 textAlign  = TextAlign.Center,
-                lineHeight = 20.sp
+                lineHeight = 22.sp
             )
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(16.dp))
+            // Level chip
             Box(
-                modifier            = Modifier
+                modifier         = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(Color.White.copy(alpha = 0.22f))
+                    .padding(horizontal = 18.dp, vertical = 6.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text      = levelInfo,
+                    fontSize  = 13.sp,
+                    color     = Color.White,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            Box(
+                modifier         = Modifier
                     .clip(RoundedCornerShape(50))
                     .background(Color.White.copy(alpha = 0.25f))
                     .padding(horizontal = 32.dp, vertical = 10.dp),
-                contentAlignment    = Alignment.Center
+                contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text       = "Oyna! 🚀",
+                    text       = "Başla! 🚀",
                     fontSize   = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color      = Color.White
