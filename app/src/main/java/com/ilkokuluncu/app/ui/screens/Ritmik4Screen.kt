@@ -149,19 +149,49 @@ fun Ritmik4Screen(
             drawCircle(Color(0xFFFFF176).copy(alpha = 0.70f), 42f, Offset(sunX, sunY))
             drawCircle(Color(0xFFFFEE58), 28f, Offset(sunX, sunY))
 
-            // ── Uzak dağ / kum tepeleri silüeti ──────────────────────────────
+            // ── Uzak dağ / kum tepeleri silüeti (çok katmanlı) ──────────────────
             val duneRng = java.util.Random(99L)
+
+            // İlk katman (en uzak, hafif)
             var dx = 0f
             while (dx < sw) {
-                val dw = 80f + duneRng.nextFloat() * 140f
-                val dh = 18f + duneRng.nextFloat() * 40f
+                val dw = 100f + duneRng.nextFloat() * 180f
+                val dh = 12f + duneRng.nextFloat() * 28f
                 val path = Path().apply {
                     moveTo(dx, horizon)
                     quadraticBezierTo(dx + dw / 2f, horizon - dh, dx + dw, horizon)
                     close()
                 }
-                drawPath(path, Color(0xFFE0A84B).copy(alpha = 0.60f))
+                drawPath(path, Color(0xFFD4A856).copy(alpha = 0.35f))
+                dx += dw * 0.65f
+            }
+
+            // İkinci katman (ortada)
+            dx = -40f
+            while (dx < sw) {
+                val dw = 85f + duneRng.nextFloat() * 130f
+                val dh = 16f + duneRng.nextFloat() * 36f
+                val path = Path().apply {
+                    moveTo(dx, horizon)
+                    quadraticBezierTo(dx + dw / 2f, horizon - dh, dx + dw, horizon)
+                    close()
+                }
+                drawPath(path, Color(0xFFD6B956).copy(alpha = 0.50f))
                 dx += dw * 0.70f
+            }
+
+            // Üçüncü katman (en yakın, koyu)
+            dx = -20f
+            while (dx < sw) {
+                val dw = 90f + duneRng.nextFloat() * 140f
+                val dh = 18f + duneRng.nextFloat() * 42f
+                val path = Path().apply {
+                    moveTo(dx, horizon)
+                    quadraticBezierTo(dx + dw / 2f, horizon - dh, dx + dw, horizon)
+                    close()
+                }
+                drawPath(path, Color(0xFFCB9D4A).copy(alpha = 0.65f))
+                dx += dw * 0.72f
             }
 
             // ── Çöl zemini ───────────────────────────────────────────────────
@@ -198,9 +228,9 @@ fun Ritmik4Screen(
                 )
             }
 
-            // ── Süs: taşlar ve çalılar ────────────────────────────────────────
+            // ── Süs: taşlar, çalılar ve kaktüsler ────────────────────────────────
             val decRng = java.util.Random(55L)
-            repeat(30) {
+            repeat(40) {
                 val rx = decRng.nextFloat() * sw
                 val ry = horizon + decRng.nextFloat() * (sh - horizon)
                 // Yol bantlarına denk geliyorsa çizme
@@ -208,7 +238,7 @@ fun Ritmik4Screen(
                     ry in (ty - R4_CAR_H / 2f - 12f)..(ty + R4_CAR_H / 2f + 12f)
                 }
                 if (!onRoad) {
-                    when (decRng.nextInt(3)) {
+                    when (decRng.nextInt(4)) {
                         0 -> { // Taş
                             val rr = 6f + decRng.nextFloat() * 12f
                             drawCircle(Color(0xFF9E9070).copy(alpha = 0.80f), rr,     Offset(rx, ry))
@@ -221,9 +251,54 @@ fun Ritmik4Screen(
                             drawCircle(Color(0xFF9A7830).copy(alpha = 0.60f), br * 0.7f,
                                 Offset(rx - br * 0.25f, ry - br * 0.3f))
                         }
-                        else -> { // Kaya kümesi
+                        2 -> { // Kaya kümesi
                             drawCircle(Color(0xFF8B7355).copy(alpha = 0.70f), 9f,  Offset(rx, ry))
                             drawCircle(Color(0xFF8B7355).copy(alpha = 0.55f), 6f,  Offset(rx + 10f, ry + 4f))
+                        }
+                        else -> { // Kaktüs
+                            val cactusHeight = 30f + decRng.nextFloat() * 35f
+                            // Ana gövde
+                            drawRect(
+                                Color(0xFF6B8E23).copy(alpha = 0.85f),
+                                topLeft = Offset(rx - 5f, ry - cactusHeight),
+                                size = Size(10f, cactusHeight)
+                            )
+                            // Koyu ton gölge
+                            drawRect(
+                                Color(0xFF4A6319).copy(alpha = 0.50f),
+                                topLeft = Offset(rx - 2f, ry - cactusHeight),
+                                size = Size(4f, cactusHeight)
+                            )
+                            // Sol kol
+                            drawRect(
+                                Color(0xFF6B8E23).copy(alpha = 0.80f),
+                                topLeft = Offset(rx - 14f, ry - cactusHeight * 0.65f),
+                                size = Size(9f, 12f)
+                            )
+                            // Sağ kol
+                            drawRect(
+                                Color(0xFF6B8E23).copy(alpha = 0.80f),
+                                topLeft = Offset(rx + 5f, ry - cactusHeight * 0.50f),
+                                size = Size(9f, 11f)
+                            )
+                            // Üst kol (mini)
+                            drawRect(
+                                Color(0xFF6B8E23).copy(alpha = 0.75f),
+                                topLeft = Offset(rx - 8f, ry - cactusHeight * 0.25f),
+                                size = Size(7f, 10f)
+                            )
+                            // Çiçek (kırmızı, tepede)
+                            drawCircle(Color(0xFFFF6B6B).copy(alpha = 0.85f), 4.5f, Offset(rx, ry - cactusHeight - 3f))
+                            // Dikenler (küçük beyaz noktalar)
+                            listOf(
+                                Offset(rx - 4f, ry - cactusHeight * 0.75f),
+                                Offset(rx + 3f, ry - cactusHeight * 0.60f),
+                                Offset(rx - 6f, ry - cactusHeight * 0.40f),
+                                Offset(rx + 4f, ry - cactusHeight * 0.20f),
+                                Offset(rx - 3f, ry - cactusHeight * 0.10f)
+                            ).forEach { spine ->
+                                drawCircle(Color(0xFFFFF9C4).copy(alpha = 0.70f), 1.5f, spine)
+                            }
                         }
                     }
                 }
@@ -466,7 +541,7 @@ private fun r4DrawCar(
                 cornerRadius = CornerRadius(8f)
             )
 
-            // ── Kabin
+            // ── Kabin (arka plan)
             drawRoundRect(
                 darkColor.copy(alpha = alpha),
                 topLeft      = Offset(cabLeft - 2f, cabTop - 2f),
@@ -487,12 +562,29 @@ private fun r4DrawCar(
                 size         = Size(cabW * 0.38f, cabH * 0.78f),
                 cornerRadius = CornerRadius(7f)
             )
+            // Ön cam çerçevesi
+            drawRoundRect(
+                Color.Black.copy(alpha = 0.30f * alpha),
+                topLeft      = Offset(cabLeft + cabW * 0.04f, cabTop + cabH * 0.12f),
+                size         = Size(cabW * 0.38f, cabH * 0.78f),
+                cornerRadius = CornerRadius(7f),
+                style        = Stroke(1.5f)
+            )
+
             // ── Arka cam
             drawRoundRect(
                 Color(0xFF87CEEB).copy(alpha = 0.65f * alpha),
                 topLeft      = Offset(cabLeft + cabW * 0.55f, cabTop + cabH * 0.14f),
                 size         = Size(cabW * 0.37f, cabH * 0.72f),
                 cornerRadius = CornerRadius(6f)
+            )
+            // Arka cam çerçevesi
+            drawRoundRect(
+                Color.Black.copy(alpha = 0.25f * alpha),
+                topLeft      = Offset(cabLeft + cabW * 0.55f, cabTop + cabH * 0.14f),
+                size         = Size(cabW * 0.37f, cabH * 0.72f),
+                cornerRadius = CornerRadius(6f),
+                style        = Stroke(1.5f)
             )
 
             // ── Tavan rafı
@@ -509,15 +601,66 @@ private fun r4DrawCar(
                 strokeWidth = 2f
             )
 
-            // ── Ön tampon / far
+            // ── Kapı seçimi (orta dikey çizgi)
             drawLine(
-                darkColor.copy(alpha = alpha),
-                Offset(left + 5f, bodyTop + bodyH * 0.25f),
-                Offset(left + 5f, bodyTop + bodyH * 0.75f),
-                strokeWidth = 4f
+                darkColor.copy(alpha = 0.45f * alpha),
+                Offset(left + W * 0.50f, bodyTop + bodyH * 0.15f),
+                Offset(left + W * 0.50f, bodyTop + bodyH * 0.85f),
+                strokeWidth = 2f
             )
-            drawCircle(Color(0xFFFFF176).copy(alpha = 0.80f * alpha), 4f,
-                Offset(left + 6f, bodyTop + bodyH * 0.35f))
+
+            // ── Ön tampon / far
+            drawRoundRect(
+                darkColor.copy(alpha = 0.95f * alpha),
+                topLeft      = Offset(left + 2f, bodyTop + bodyH * 0.20f),
+                size         = Size(6f, bodyH * 0.60f),
+                cornerRadius = CornerRadius(3f)
+            )
+            // Far ışığı (sol taraf)
+            drawCircle(Color(0xFFFFF176).copy(alpha = 0.85f * alpha), 3.5f,
+                Offset(left + 5f, bodyTop + bodyH * 0.35f))
+            drawCircle(Color(0xFFFFF176).copy(alpha = 0.50f * alpha), 2f,
+                Offset(left + 5f, bodyTop + bodyH * 0.35f))
+
+            // Ön ek ışık (aşağı)
+            drawCircle(Color(0xFFFF8C00).copy(alpha = 0.70f * alpha), 2.5f,
+                Offset(left + 5f, bodyTop + bodyH * 0.65f))
+
+            // ── Sol ayna (araba sola gittiği için sol = ön)
+            drawRoundRect(
+                Color(0xFF90CAF9).copy(alpha = 0.75f * alpha),
+                topLeft      = Offset(cabLeft - 8f, cabTop + cabH * 0.25f),
+                size         = Size(5f, 8f),
+                cornerRadius = CornerRadius(2f)
+            )
+            drawRoundRect(
+                darkColor.copy(alpha = 0.6f * alpha),
+                topLeft      = Offset(cabLeft - 12f, cabTop + cabH * 0.20f),
+                size         = Size(5f, 3f),
+                cornerRadius = CornerRadius(1.5f)
+            )
+
+            // ── Sağ ayna
+            drawRoundRect(
+                Color(0xFF90CAF9).copy(alpha = 0.65f * alpha),
+                topLeft      = Offset(left + W - 5f, cabTop + cabH * 0.30f),
+                size         = Size(5f, 7f),
+                cornerRadius = CornerRadius(2f)
+            )
+            drawRoundRect(
+                darkColor.copy(alpha = 0.5f * alpha),
+                topLeft      = Offset(left + W + 7f, cabTop + cabH * 0.25f),
+                size         = Size(4f, 3f),
+                cornerRadius = CornerRadius(1.5f)
+            )
+
+            // ── Çıkıntı / spoiler (arka taraf)
+            drawRoundRect(
+                Color.Black.copy(alpha = 0.30f * alpha),
+                topLeft      = Offset(left + W - 8f, bodyTop + bodyH * 0.30f),
+                size         = Size(4f, bodyH * 0.40f),
+                cornerRadius = CornerRadius(2f)
+            )
 
             // ── Hit overlay
             if (car.hitCorrect || car.hitWrong) {

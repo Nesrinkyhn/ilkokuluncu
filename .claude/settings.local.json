@@ -8,7 +8,8 @@
       "Bash(bash /tmp/update_buttons.sh)",
       "Bash(chmod +x /tmp/fix_screens.sh)",
       "Bash(bash /tmp/fix_screens.sh)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(./gradlew build *)"
     ]
   }
 }
