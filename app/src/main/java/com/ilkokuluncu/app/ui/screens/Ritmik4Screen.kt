@@ -230,7 +230,7 @@ fun Ritmik4Screen(
 
             // ── Süs: taşlar, çalılar ve kaktüsler ────────────────────────────────
             val decRng = java.util.Random(55L)
-            repeat(40) {
+            repeat(32) {
                 val rx = decRng.nextFloat() * sw
                 val ry = horizon + decRng.nextFloat() * (sh - horizon)
                 // Yol bantlarına denk geliyorsa çizme
