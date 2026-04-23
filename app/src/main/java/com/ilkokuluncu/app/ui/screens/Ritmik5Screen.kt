@@ -72,7 +72,8 @@ fun Ritmik5Screen(
         onDispose { activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED }
     }
 
-    GameBackgroundMusic(volume = 0.28f)
+    // TODO: GameBackgroundMusic temporarily disabled for debugging
+    // GameBackgroundMusic(volume = 0.28f)
 
     val pool = remember {
         SoundPool.Builder().setMaxStreams(6)
