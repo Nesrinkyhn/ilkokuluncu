@@ -175,6 +175,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 // Çarpışan Balonlar → Çarpma menüsüne dön
                 if (destination.moduleId == "matematik" && destination.levelId == "carpisan_balonlar") {
                     _currentDestination.value = NavigationDestination.Game("matematik", "math_multiplication")
+                } else if (destination.moduleId == "carpma") {
+                    _currentDestination.value = NavigationDestination.CarpmaOyunlar
                 } else {
                     applyUnlocks()
                     val module = repository.getModule(destination.moduleId)
@@ -194,7 +196,25 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 val module = repository.getModule(destination.moduleId)
                 if (module != null) _currentDestination.value = NavigationDestination.LevelSelection(module)
             }
-            else -> Unit
+            is NavigationDestination.CarpmaOyunlar -> {
+                _currentDestination.value = NavigationDestination.CarpmaMenu
+            }
+            is NavigationDestination.RitmikSaymaMenu -> {
+                _currentDestination.value = NavigationDestination.CarpmaMenu
+            }
+            is NavigationDestination.Ritmik2Game,
+            is NavigationDestination.Ritmik3Game,
+            is NavigationDestination.Ritmik4Game,
+            is NavigationDestination.Ritmik5Game -> {
+                _currentDestination.value = NavigationDestination.RitmikSaymaMenu
+            }
+            is NavigationDestination.CarpmaMenu -> {
+                _currentDestination.value = NavigationDestination.MainMenu
+            }
+            is NavigationDestination.MainMenu -> {
+                // Ana menüdeyseniz uygulamadan çıkın (Android handle eder)
+                Unit
+            }
         }
     }
 }
