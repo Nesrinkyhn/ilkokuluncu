@@ -94,27 +94,6 @@ class GameRepository {
                         icon          = "⚽",
                         isUnlocked    = true,
                         requiredScore = 0
-                    ),
-                    // Ritmik Sayma kartı
-                    GameLevel(
-                        id            = "ritmik_2",
-                        levelNumber   = 3,
-                        title         = "2'li Ritmik Sayma",
-                        description   = "2, 4, 6, 8… ikişer ikişer say!",
-                        icon          = "2️⃣",
-                        isUnlocked    = true,
-                        requiredScore = 0,
-                        isComingSoon  = true
-                    ),
-                    GameLevel(
-                        id            = "ritmik_3",
-                        levelNumber   = 4,
-                        title         = "3'ler",
-                        description   = "3, 6, 9, 12… üçer üçer say!",
-                        icon          = "3️⃣",
-                        isUnlocked    = true,
-                        requiredScore = 0,
-                        isComingSoon  = true
                     )
                 )
             ),
