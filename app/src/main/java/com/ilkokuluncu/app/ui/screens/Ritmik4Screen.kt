@@ -262,7 +262,7 @@ fun Ritmik4Screen(
                 // Geri butonu
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(54.dp)
                         .background(Color.Black.copy(alpha = 0.20f), RoundedCornerShape(8.dp))
                         .pointerInput(Unit) { detectTapGestures { onBackPress() } },
                     contentAlignment = Alignment.Center

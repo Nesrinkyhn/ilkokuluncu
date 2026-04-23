@@ -200,11 +200,11 @@ fun Ritmik3Screen(
                 // Geri
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
-                        .background(Color.White.copy(0.12f), RoundedCornerShape(8.dp))
+                        .size(54.dp)
+                        .background(Color(0xC8D32F2F), RoundedCornerShape(8.dp))
                         .pointerInput(Unit) { detectTapGestures { onBackPress() } },
                     contentAlignment = Alignment.Center
-                ) { Text("✕", color = Color.White, fontSize = 15.sp) }
+                ) { Text("✕", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold) }
 
                 // İlerleme: 3 6 9 … 30
                 Row(

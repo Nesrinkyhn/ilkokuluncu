@@ -378,11 +378,11 @@ private fun MarioHUD(state: MarioState, onBackPress: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            Modifier.size(36.dp).clip(CircleShape)
-                .background(Color.Black.copy(0.28f))
+            Modifier.size(54.dp).clip(CircleShape)
+                .background(Color(0xC8D32F2F))
                 .clickable(onClick = onBackPress),
             contentAlignment = Alignment.Center
-        ) { Text("◀", fontSize = 14.sp, color = Color.White) }
+        ) { Text("◀", fontSize = 21.sp, color = Color.White, fontWeight = FontWeight.Bold) }
 
         Spacer(Modifier.width(8.dp))
 

@@ -633,10 +633,10 @@ private fun GrControlsOverlay(onEvent: (GoldRunEvent) -> Unit, onBackPress: () -
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(start = 10.dp, bottom = 10.dp)
-                .width(90.dp)
-                .height(80.dp)
+                .width(135.dp)
+                .height(120.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xAA1565C0))
+                .background(Color(0xAAD32F2F))
                 .pointerInput(Unit) {
                     awaitPointerEventScope {
                         while (true) {
@@ -652,8 +652,8 @@ private fun GrControlsOverlay(onEvent: (GoldRunEvent) -> Unit, onBackPress: () -
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("◀", fontSize = 26.sp, color = Color.White, fontWeight = FontWeight.Bold)
-                Text("geri", fontSize = 10.sp, color = Color.White.copy(alpha = 0.8f))
+                Text("◀", fontSize = 39.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                Text("geri", fontSize = 15.sp, color = Color.White.copy(alpha = 0.8f))
             }
         }
 

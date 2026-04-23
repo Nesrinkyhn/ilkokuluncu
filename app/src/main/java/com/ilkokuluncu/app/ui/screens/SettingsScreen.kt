@@ -9,9 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
+import com.ilkokuluncu.app.ui.components.RedBackButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,13 +52,12 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
+                RedBackButton(
                     onClick = onBackClick,
-                    modifier = Modifier
-                        .background(Color.White.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
-                ) {
-                    Icon(Icons.Default.ArrowBack, "Geri", tint = Color.White)
-                }
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(12.dp),
+                    size = 48
+                )
                 Spacer(Modifier.width(16.dp))
                 Text("⚙️ Ayarlar", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White)
             }

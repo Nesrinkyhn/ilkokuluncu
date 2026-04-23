@@ -7,10 +7,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import com.ilkokuluncu.app.ui.components.RedBackButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,19 +36,13 @@ fun CarpmaMenuScreen(
             .fillMaxSize()
             .background(bgGradient)
     ) {
-        // ── Geri butonu ───────────────────────────────────────────────────────
-        IconButton(
-            onClick  = onBackPress,
+        RedBackButton(
+            onClick = onBackPress,
             modifier = Modifier
                 .padding(12.dp)
                 .statusBarsPadding()
                 .align(Alignment.TopStart)
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.15f))
-        ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Geri", tint = Color.White)
-        }
+        )
 
         Column(
             modifier = Modifier

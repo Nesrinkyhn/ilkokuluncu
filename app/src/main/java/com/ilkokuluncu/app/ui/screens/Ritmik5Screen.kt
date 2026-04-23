@@ -281,7 +281,7 @@ fun Ritmik5Screen(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(54.dp)
                         .background(Color.Black.copy(0.18f), RoundedCornerShape(8.dp))
                         .pointerInput(Unit) { detectTapGestures { onBackPress() } },
                     contentAlignment = Alignment.Center

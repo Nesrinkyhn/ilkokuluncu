@@ -7,9 +7,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
+import com.ilkokuluncu.app.ui.components.RedBackButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -112,14 +111,12 @@ private fun MatchPlayArea(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
+                RedBackButton(
                     onClick = onBack,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(Color.White.copy(alpha = 0.15f), RoundedCornerShape(10.dp))
-                ) {
-                    Icon(Icons.Default.ArrowBack, "Geri", tint = Color.White, modifier = Modifier.size(20.dp))
-                }
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(10.dp),
+                    size = 60
+                )
 
                 // Puan
                 Surface(shape = RoundedCornerShape(16.dp), color = Color.White.copy(alpha = 0.15f)) {

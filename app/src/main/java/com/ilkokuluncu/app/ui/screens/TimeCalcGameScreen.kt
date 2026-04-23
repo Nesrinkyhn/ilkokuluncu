@@ -5,9 +5,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
+import com.ilkokuluncu.app.ui.components.RedBackButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,12 +101,12 @@ private fun TimeCalcPlayScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
+                RedBackButton(
                     onClick = onBackPress,
-                    modifier = Modifier.background(Color.White.copy(alpha = 0.15f), RoundedCornerShape(12.dp))
-                ) {
-                    Icon(Icons.Default.ArrowBack, "Geri", tint = Color.White)
-                }
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(12.dp),
+                    size = 48
+                )
 
                 // Hedef çubuğu
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {

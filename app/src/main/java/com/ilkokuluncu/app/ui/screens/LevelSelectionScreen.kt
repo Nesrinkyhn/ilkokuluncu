@@ -7,10 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
+import com.ilkokuluncu.app.ui.components.RedBackButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,17 +74,12 @@ fun LevelSelectionScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
+                RedBackButton(
                     onClick = onBackClick,
-                    modifier = Modifier
-                        .background(Color.White.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Geri",
-                        tint = Color.White
-                    )
-                }
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(12.dp),
+                    size = 48
+                )
                 
                 Spacer(modifier = Modifier.width(16.dp))
                 

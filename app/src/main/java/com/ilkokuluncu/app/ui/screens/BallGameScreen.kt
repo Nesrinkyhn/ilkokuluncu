@@ -13,9 +13,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
+import com.ilkokuluncu.app.ui.components.RedBackButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -108,12 +107,12 @@ fun BallGameScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(
+                    RedBackButton(
                         onClick = onBackPress,
-                        modifier = Modifier.background(Color.White.copy(alpha = 0.25f), RoundedCornerShape(12.dp))
-                    ) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri", tint = Color.White)
-                    }
+                        modifier = Modifier,
+                        shape = RoundedCornerShape(12.dp),
+                        size = 48
+                    )
                     Surface(shape = RoundedCornerShape(20.dp), color = Color.White.copy(alpha = 0.9f), shadowElevation = 4.dp) {
                         Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                             Text("⭐", fontSize = 22.sp)
