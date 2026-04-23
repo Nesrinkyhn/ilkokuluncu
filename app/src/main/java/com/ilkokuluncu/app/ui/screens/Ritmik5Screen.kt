@@ -82,19 +82,21 @@ fun Ritmik5Screen(
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
             ).build()
     }
-    val sTap     = remember { pool.load(context, R.raw.clock_tap,     1) }
-    val sCorrect = remember { pool.load(context, R.raw.clock_correct, 1) }
-    val sWrong   = remember { pool.load(context, R.raw.clock_wrong,   1) }
+    val sTap     = remember { try { pool.load(context, R.raw.clock_tap,     1) } catch(e: Exception) { 0 } }
+    val sCorrect = remember { try { pool.load(context, R.raw.clock_correct, 1) } catch(e: Exception) { 0 } }
+    val sWrong   = remember { try { pool.load(context, R.raw.clock_wrong,   1) } catch(e: Exception) { 0 } }
     DisposableEffect(pool) { onDispose { pool.release() } }
 
     LaunchedEffect(viewModel) {
         viewModel.sounds.collect { snd ->
-            when (snd) {
-                Ritmik5Sound.Tap      -> pool.play(sTap,     0.60f, 0.60f, 1, 0, 1.0f)
-                Ritmik5Sound.Correct  -> pool.play(sCorrect, 0.90f, 0.90f, 1, 0, 1.1f)
-                Ritmik5Sound.Wrong    -> pool.play(sWrong,   0.90f, 0.90f, 1, 0, 0.9f)
-                Ritmik5Sound.CycleWin -> pool.play(sCorrect, 1.00f, 1.00f, 1, 0, 1.5f)
-            }
+            try {
+                when (snd) {
+                    Ritmik5Sound.Tap      -> if (sTap > 0) pool.play(sTap,     0.60f, 0.60f, 1, 0, 1.0f)
+                    Ritmik5Sound.Correct  -> if (sCorrect > 0) pool.play(sCorrect, 0.90f, 0.90f, 1, 0, 1.1f)
+                    Ritmik5Sound.Wrong    -> if (sWrong > 0) pool.play(sWrong,   0.90f, 0.90f, 1, 0, 0.9f)
+                    Ritmik5Sound.CycleWin -> if (sCorrect > 0) pool.play(sCorrect, 1.00f, 1.00f, 1, 0, 1.5f)
+                }
+            } catch (e: Exception) { /* Ses çalma hatası ignore */ }
         }
     }
 
