@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import com.ilkokuluncu.app.ui.components.RedBackButton
 import androidx.compose.runtime.Composable
+import androidx.activity.compose.BackHandler
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,8 +28,15 @@ fun RitmikSaymaMenuScreen(
     onLevel2Click: () -> Unit = {},
     onLevel3Click: () -> Unit = {},
     onLevel4Click: () -> Unit = {},
+    onLevel5Click: () -> Unit = {},
+    onLevel6Click: () -> Unit = {},
     onBackPress:   () -> Unit
 ) {
+    // Donanım geri tuşu
+    BackHandler { onBackPress() }
+
+
+
     val bgGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF004D40), Color(0xFF00796B), Color(0xFF004D40))
     )
@@ -38,14 +46,6 @@ fun RitmikSaymaMenuScreen(
             .fillMaxSize()
             .background(bgGradient)
     ) {
-        RedBackButton(
-            onClick = onBackPress,
-            modifier = Modifier
-                .padding(12.dp)
-                .statusBarsPadding()
-                .align(Alignment.TopStart)
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,6 +71,7 @@ fun RitmikSaymaMenuScreen(
                 textAlign = TextAlign.Center,
                 modifier  = Modifier.padding(top = 6.dp)
             )
+
 
             Spacer(Modifier.height(40.dp))
 
@@ -127,7 +128,46 @@ fun RitmikSaymaMenuScreen(
                 comingSoon  = false,
                 onClick     = onLevel4Click
             )
+
+            Spacer(Modifier.height(20.dp))
+
+            // ── Level 5: 6'larla Sayıyoruz ────────────────────────────────────
+            RitmikLevelCard(
+                level       = "Level 5",
+                emoji       = "6️⃣",
+                title       = "6'larla Sayıyoruz",
+                description = "6, 12, 18 … 60\nKutuları sürükle, birleştir, 60'a ulaş!",
+                color1      = Color(0xFF6C5CE7),
+                color2      = Color(0xFFA29BFE),
+                comingSoon  = false,
+                onClick     = onLevel5Click
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            // ── Level 6: 7'ler Koşusu ─────────────────────────────────────────
+            RitmikLevelCard(
+                level       = "Level 6",
+                emoji       = "🏃",
+                title       = "7'ler Koşusu",
+                description = "7, 14, 21, 28…\nKoşucu olarak 7'nin katlarını topla!",
+                color1      = Color(0xFF1A1A2E),
+                color2      = Color(0xFF4D96FF),
+                comingSoon  = false,
+                onClick     = onLevel6Click
+            )
+
+            Spacer(Modifier.height(20.dp))
         }
+
+        // Geri butonu en üstte (Column'dan sonra → tıklamaları kaçırmaz)
+        RedBackButton(
+            onClick = onBackPress,
+            modifier = Modifier
+                .padding(12.dp)
+                .statusBarsPadding()
+                .align(Alignment.TopStart)
+        )
     }
 }
 

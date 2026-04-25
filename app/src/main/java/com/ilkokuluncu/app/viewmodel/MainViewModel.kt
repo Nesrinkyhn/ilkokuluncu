@@ -22,6 +22,8 @@ sealed class NavigationDestination {
     object Ritmik3Game      : NavigationDestination()   // 3'ler Ritmik Sayma oyunu
     object Ritmik4Game      : NavigationDestination()   // 4'ler Safari oyunu
     object Ritmik5Game      : NavigationDestination()   // 5'ler Dondurma oyunu
+    object Ritmik6Game      : NavigationDestination()   // 6'lar Sayıyoruz oyunu
+    object Ritmik7Game      : NavigationDestination()   // 7'ler Koşucu oyunu
     data class LevelSelection(val module: GameModule) : NavigationDestination()
     data class Game(val moduleId: String, val levelId: String) : NavigationDestination()
     data class TestGame(val moduleId: String, val levelId: String) : NavigationDestination()
@@ -129,6 +131,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun navigateToRitmik3()         { _currentDestination.value = NavigationDestination.Ritmik3Game }
     fun navigateToRitmik4()         { _currentDestination.value = NavigationDestination.Ritmik4Game }
     fun navigateToRitmik5()         { _currentDestination.value = NavigationDestination.Ritmik5Game }
+    fun navigateToRitmik6()         { _currentDestination.value = NavigationDestination.Ritmik6Game }
+    fun navigateToRitmik7()         { _currentDestination.value = NavigationDestination.Ritmik7Game }
 
     fun navigateToLevel(moduleId: String, levelId: String) {
         _currentDestination.value = NavigationDestination.Game(moduleId, levelId)
@@ -205,7 +209,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             is NavigationDestination.Ritmik2Game,
             is NavigationDestination.Ritmik3Game,
             is NavigationDestination.Ritmik4Game,
-            is NavigationDestination.Ritmik5Game -> {
+            is NavigationDestination.Ritmik5Game,
+            is NavigationDestination.Ritmik6Game,
+            is NavigationDestination.Ritmik7Game -> {
                 _currentDestination.value = NavigationDestination.RitmikSaymaMenu
             }
             is NavigationDestination.CarpmaMenu -> {

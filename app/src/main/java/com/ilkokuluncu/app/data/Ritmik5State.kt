@@ -2,8 +2,8 @@ package com.ilkokuluncu.app.data
 
 enum class Ritmik5Phase { COUNTDOWN, PLAYING, FAIL_ANIM }
 
-const val R5_ICE_R  = 40f   // dondurma topu yarıçapı
-const val R5_CONE_H = 62f   // külah yüksekliği
+const val R5_ICE_R  = 60f   // dondurma topu yarıçapı (%50 büyütüldü)
+const val R5_CONE_H = 93f   // külah yüksekliği (%50 büyütüldü)
 
 // 5, 10, 15 … 50
 val RITMIK5_SEQUENCE = (1..10).map { it * 5 }
@@ -33,5 +33,6 @@ data class Ritmik5State(
     val totalScore: Int          = 0,
     val pointsPerHit: Int        = 5,
     val cycleCount: Int          = 0,
-    val screenW: Float           = 1280f
+    val screenW: Float           = 1280f,
+    val totalCorrectCatches: Int = 0
 )

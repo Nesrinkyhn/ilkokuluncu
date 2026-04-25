@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.activity.compose.BackHandler
 import com.ilkokuluncu.app.ui.components.RedBackButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,8 @@ fun CarpmaMenuScreen(
     onOyunlarClick: () -> Unit,
     onBackPress: () -> Unit
 ) {
+    BackHandler { onBackPress() }
+
     val bgGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF1A0050), Color(0xFF4A0080), Color(0xFF1A0050))
     )
@@ -36,14 +39,6 @@ fun CarpmaMenuScreen(
             .fillMaxSize()
             .background(bgGradient)
     ) {
-        RedBackButton(
-            onClick = onBackPress,
-            modifier = Modifier
-                .padding(12.dp)
-                .statusBarsPadding()
-                .align(Alignment.TopStart)
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -99,6 +94,15 @@ fun CarpmaMenuScreen(
 
             Spacer(Modifier.height(32.dp))
         }
+
+        // Geri butonu en üstte (Column'dan sonra → tıklamaları kaçırmaz)
+        RedBackButton(
+            onClick = onBackPress,
+            modifier = Modifier
+                .padding(12.dp)
+                .statusBarsPadding()
+                .align(Alignment.TopStart)
+        )
     }
 }
 

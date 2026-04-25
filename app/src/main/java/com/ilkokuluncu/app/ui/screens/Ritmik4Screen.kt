@@ -29,6 +29,7 @@ import com.ilkokuluncu.app.data.*
 import com.ilkokuluncu.app.viewmodel.Ritmik4Sound
 import com.ilkokuluncu.app.viewmodel.Ritmik4ViewModel
 import com.ilkokuluncu.app.ui.effects.GameBackgroundMusic
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.gestures.detectTapGestures
 import kotlin.math.ceil
 
@@ -62,6 +63,8 @@ fun Ritmik4Screen(
     viewModel: Ritmik4ViewModel,
     onBackPress: () -> Unit
 ) {
+    BackHandler { onBackPress() }
+
     val context  = LocalContext.current
     val activity = context as? Activity
     val density  = LocalDensity.current.density
@@ -338,10 +341,10 @@ fun Ritmik4Screen(
                 Box(
                     modifier = Modifier
                         .size(54.dp)
-                        .background(Color.Black.copy(alpha = 0.20f), RoundedCornerShape(8.dp))
+                        .background(Color.Red, RoundedCornerShape(8.dp))
                         .pointerInput(Unit) { detectTapGestures { onBackPress() } },
                     contentAlignment = Alignment.Center
-                ) { Text("✕", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold) }
+                ) { Text("✕", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold) }
 
                 // Sayı dizisi: 4 8 12 … 40
                 Row(
@@ -463,7 +466,7 @@ fun Ritmik4Screen(
     }
 }
 
-// ── Safari araba çizimi ───────────────────────────────────────────────────────
+// ── Kamyonet (pickup truck 🛻) çizimi ────────────────────────────────────────
 private fun r4DrawCar(
     scope: DrawScope,
     car: Ritmik4Car,
@@ -475,6 +478,7 @@ private fun r4DrawCar(
         val left = car.x
         val W    = R4_CAR_W
         val H    = R4_CAR_H
+        val cx   = left + W / 2f
 
         val alpha = when {
             car.hitWrong && !car.hitCorrect -> (car.anim / 0.6f).coerceIn(0f, 1f)
@@ -486,235 +490,213 @@ private fun r4DrawCar(
             else           -> 1f
         }.coerceIn(0.2f, 1.5f)
 
-        val cx = left + W / 2f
-
         withTransform({ scale(scale, scale, Offset(cx, centerY)) }) {
 
             val bodyColor = CAR_BODY[car.track]
             val darkColor = CAR_DARK[car.track]
 
-            // Oranlar
-            val wheelR  = H * 0.18f
-            val bodyTop = centerY - H * 0.28f   // gövde başlangıcı
-            val bodyH   = H * 0.55f
-            val cabTop  = centerY - H * 0.50f   // kabin başlangıcı
-            val cabH    = H * 0.26f
-            val cabLeft = left + W * 0.14f
-            val cabW    = W * 0.72f
+            // ── Ölçüler ─────────────────────────────────────────
+            val wheelR   = H * 0.20f
+            val baseY    = centerY + H * 0.30f      // şasi altı
+            val shassisH = H * 0.18f                // şasi yüksekliği
+            val shassisT = baseY - shassisH
 
-            // ── Tekerlek gölgeleri
-            val fwX = left + W * 0.20f
-            val rwX = left + W * 0.78f
-            val wyY = bodyTop + bodyH - wheelR * 0.35f
-            drawCircle(Color.Black.copy(alpha = 0.22f * alpha), wheelR + 5f, Offset(fwX, wyY + 3f))
-            drawCircle(Color.Black.copy(alpha = 0.22f * alpha), wheelR + 5f, Offset(rwX, wyY + 3f))
+            // Kabin (sol = ön): W'nin %45'i
+            val cabLeft  = left + W * 0.02f
+            val cabW     = W * 0.45f
+            val cabTop   = centerY - H * 0.42f
+            val cabH     = shassisT - cabTop
 
-            // ── Tekerlekler (lastik)
-            drawCircle(Color(0xFF1C1C1C).copy(alpha = alpha), wheelR, Offset(fwX, wyY))
-            drawCircle(Color(0xFF1C1C1C).copy(alpha = alpha), wheelR, Offset(rwX, wyY))
-            // Jant
-            drawCircle(Color(0xFFD4AF37).copy(alpha = alpha), wheelR * 0.55f, Offset(fwX, wyY))
-            drawCircle(Color(0xFFD4AF37).copy(alpha = alpha), wheelR * 0.55f, Offset(rwX, wyY))
-            // Göbek
-            drawCircle(Color(0xFF888888).copy(alpha = alpha), wheelR * 0.22f, Offset(fwX, wyY))
-            drawCircle(Color(0xFF888888).copy(alpha = alpha), wheelR * 0.22f, Offset(rwX, wyY))
+            // Yük kasası (sağ = arka): W'nin %48'i
+            val bedLeft  = cabLeft + cabW
+            val bedW     = W * 0.48f
+            val bedTop   = centerY - H * 0.18f      // kabin daha kısa
+            val bedH     = shassisT - bedTop
 
-            // ── Gövde gölgesi
-            drawRoundRect(
-                Color.Black.copy(alpha = 0.20f * alpha),
-                topLeft      = Offset(left + 4f, bodyTop + 4f),
-                size         = Size(W, bodyH),
-                cornerRadius = CornerRadius(10f)
-            )
+            // Tekerlek X
+            val fwX = cabLeft + cabW * 0.30f        // ön tekerlek (sol)
+            val rwX = bedLeft + bedW * 0.70f        // arka tekerlek (sağ)
 
-            // ── Ana gövde
+            // ── Tekerlek gölgesi
+            drawCircle(Color.Black.copy(0.25f * alpha), wheelR + 4f, Offset(fwX, baseY + 2f))
+            drawCircle(Color.Black.copy(0.25f * alpha), wheelR + 4f, Offset(rwX, baseY + 2f))
+
+            // ── Şasi / gövde tabanı
             drawRoundRect(
                 darkColor.copy(alpha = alpha),
-                topLeft      = Offset(left, bodyTop),
-                size         = Size(W, bodyH),
-                cornerRadius = CornerRadius(10f)
+                topLeft      = Offset(left + 2f, shassisT),
+                size         = Size(W - 4f, shassisH),
+                cornerRadius = CornerRadius(6f)
             )
+
+            // ── Yük kasası arka duvarlar (açık üst)
+            // Zemin
             drawRoundRect(
                 bodyColor.copy(alpha = alpha),
-                topLeft      = Offset(left + 2f, bodyTop + 2f),
-                size         = Size(W - 4f, bodyH * 0.65f),
-                cornerRadius = CornerRadius(8f)
+                topLeft      = Offset(bedLeft, bedTop),
+                size         = Size(bedW, bedH),
+                cornerRadius = CornerRadius(4f)
+            )
+            // Sol duvar (kabin tarafı)
+            drawRect(
+                darkColor.copy(alpha = alpha),
+                topLeft = Offset(bedLeft, bedTop),
+                size    = Size(5f, bedH)
+            )
+            // Sağ duvar (arka)
+            drawRect(
+                darkColor.copy(alpha = alpha),
+                topLeft = Offset(bedLeft + bedW - 5f, bedTop),
+                size    = Size(5f, bedH)
+            )
+            // Üst kenar çizgisi
+            drawLine(
+                darkColor.copy(alpha = alpha),
+                Offset(bedLeft, bedTop), Offset(bedLeft + bedW, bedTop),
+                strokeWidth = 3.5f
             )
 
-            // ── Kabin (arka plan)
+            // ── Kabin gövdesi
             drawRoundRect(
                 darkColor.copy(alpha = alpha),
-                topLeft      = Offset(cabLeft - 2f, cabTop - 2f),
-                size         = Size(cabW + 4f, cabH + 4f),
-                cornerRadius = CornerRadius(14f)
+                topLeft      = Offset(cabLeft - 1f, cabTop - 1f),
+                size         = Size(cabW + 2f, cabH + 2f),
+                cornerRadius = CornerRadius(12f)
             )
             drawRoundRect(
                 bodyColor.copy(alpha = alpha),
                 topLeft      = Offset(cabLeft, cabTop),
                 size         = Size(cabW, cabH),
-                cornerRadius = CornerRadius(12f)
+                cornerRadius = CornerRadius(11f)
             )
 
-            // ── Ön cam (araba sola gittiği için sol = ön)
+            // ── Ön cam (sol = ön taraf)
             drawRoundRect(
-                Color(0xFF87CEEB).copy(alpha = 0.82f * alpha),
-                topLeft      = Offset(cabLeft + cabW * 0.04f, cabTop + cabH * 0.12f),
-                size         = Size(cabW * 0.38f, cabH * 0.78f),
+                Color(0xFF87CEEB).copy(alpha = 0.85f * alpha),
+                topLeft      = Offset(cabLeft + cabW * 0.06f, cabTop + cabH * 0.10f),
+                size         = Size(cabW * 0.42f, cabH * 0.75f),
                 cornerRadius = CornerRadius(7f)
             )
-            // Ön cam çerçevesi
             drawRoundRect(
-                Color.Black.copy(alpha = 0.30f * alpha),
-                topLeft      = Offset(cabLeft + cabW * 0.04f, cabTop + cabH * 0.12f),
-                size         = Size(cabW * 0.38f, cabH * 0.78f),
+                Color.Black.copy(alpha = 0.25f * alpha),
+                topLeft      = Offset(cabLeft + cabW * 0.06f, cabTop + cabH * 0.10f),
+                size         = Size(cabW * 0.42f, cabH * 0.75f),
                 cornerRadius = CornerRadius(7f),
                 style        = Stroke(1.5f)
             )
 
-            // ── Arka cam
+            // ── Arka cam (sağ taraf)
             drawRoundRect(
                 Color(0xFF87CEEB).copy(alpha = 0.65f * alpha),
-                topLeft      = Offset(cabLeft + cabW * 0.55f, cabTop + cabH * 0.14f),
-                size         = Size(cabW * 0.37f, cabH * 0.72f),
+                topLeft      = Offset(cabLeft + cabW * 0.57f, cabTop + cabH * 0.12f),
+                size         = Size(cabW * 0.35f, cabH * 0.70f),
                 cornerRadius = CornerRadius(6f)
             )
-            // Arka cam çerçevesi
+
+            // ── Ön far
             drawRoundRect(
-                Color.Black.copy(alpha = 0.25f * alpha),
-                topLeft      = Offset(cabLeft + cabW * 0.55f, cabTop + cabH * 0.14f),
-                size         = Size(cabW * 0.37f, cabH * 0.72f),
-                cornerRadius = CornerRadius(6f),
-                style        = Stroke(1.5f)
-            )
-
-            // ── Tavan rafı
-            drawLine(
-                darkColor.copy(alpha = 0.9f * alpha),
-                Offset(cabLeft + cabW * 0.08f, cabTop + 4f),
-                Offset(cabLeft + cabW * 0.92f, cabTop + 4f),
-                strokeWidth = 4f
-            )
-            drawLine(
-                darkColor.copy(alpha = 0.55f * alpha),
-                Offset(cabLeft + cabW * 0.15f, cabTop + 1.5f),
-                Offset(cabLeft + cabW * 0.85f, cabTop + 1.5f),
-                strokeWidth = 2f
-            )
-
-            // ── Kapı seçimi (orta dikey çizgi)
-            drawLine(
-                darkColor.copy(alpha = 0.45f * alpha),
-                Offset(left + W * 0.50f, bodyTop + bodyH * 0.15f),
-                Offset(left + W * 0.50f, bodyTop + bodyH * 0.85f),
-                strokeWidth = 2f
-            )
-
-            // ── Ön tampon / far
-            drawRoundRect(
-                darkColor.copy(alpha = 0.95f * alpha),
-                topLeft      = Offset(left + 2f, bodyTop + bodyH * 0.20f),
-                size         = Size(6f, bodyH * 0.60f),
+                Color(0xFFFFF176).copy(alpha = 0.90f * alpha),
+                topLeft      = Offset(cabLeft + 2f, cabTop + cabH * 0.22f),
+                size         = Size(7f, cabH * 0.22f),
                 cornerRadius = CornerRadius(3f)
             )
-            // Far ışığı (sol taraf)
-            drawCircle(Color(0xFFFFF176).copy(alpha = 0.85f * alpha), 3.5f,
-                Offset(left + 5f, bodyTop + bodyH * 0.35f))
-            drawCircle(Color(0xFFFFF176).copy(alpha = 0.50f * alpha), 2f,
-                Offset(left + 5f, bodyTop + bodyH * 0.35f))
+            // Far ışık huzmesi
+            drawLine(
+                Color(0xFFFFF9C4).copy(alpha = 0.45f * alpha),
+                Offset(cabLeft + 2f, cabTop + cabH * 0.30f),
+                Offset(cabLeft - 18f, cabTop + cabH * 0.30f),
+                strokeWidth = 6f
+            )
 
-            // Ön ek ışık (aşağı)
-            drawCircle(Color(0xFFFF8C00).copy(alpha = 0.70f * alpha), 2.5f,
-                Offset(left + 5f, bodyTop + bodyH * 0.65f))
-
-            // ── Sol ayna (araba sola gittiği için sol = ön)
+            // ── Ön ayna
             drawRoundRect(
-                Color(0xFF90CAF9).copy(alpha = 0.75f * alpha),
-                topLeft      = Offset(cabLeft - 8f, cabTop + cabH * 0.25f),
-                size         = Size(5f, 8f),
+                darkColor.copy(alpha = 0.80f * alpha),
+                topLeft      = Offset(cabLeft - 10f, cabTop + cabH * 0.30f),
+                size         = Size(10f, 6f),
                 cornerRadius = CornerRadius(2f)
             )
-            drawRoundRect(
-                darkColor.copy(alpha = 0.6f * alpha),
-                topLeft      = Offset(cabLeft - 12f, cabTop + cabH * 0.20f),
-                size         = Size(5f, 3f),
-                cornerRadius = CornerRadius(1.5f)
-            )
 
-            // ── Sağ ayna
-            drawRoundRect(
-                Color(0xFF90CAF9).copy(alpha = 0.65f * alpha),
-                topLeft      = Offset(left + W - 5f, cabTop + cabH * 0.30f),
-                size         = Size(5f, 7f),
-                cornerRadius = CornerRadius(2f)
-            )
-            drawRoundRect(
-                darkColor.copy(alpha = 0.5f * alpha),
-                topLeft      = Offset(left + W + 7f, cabTop + cabH * 0.25f),
-                size         = Size(4f, 3f),
-                cornerRadius = CornerRadius(1.5f)
-            )
+            // ── Tekerlekler
+            listOf(fwX, rwX).forEach { wx ->
+                // Lastik
+                drawCircle(Color(0xFF1A1A1A).copy(alpha = alpha), wheelR, Offset(wx, baseY))
+                drawCircle(Color.White.copy(alpha = 0.20f * alpha), wheelR, Offset(wx, baseY),
+                    style = Stroke(2f))
+                // Jant
+                drawCircle(Color(0xFFB0B0B0).copy(alpha = alpha), wheelR * 0.58f, Offset(wx, baseY))
+                // Jant kolları (+ şeklinde)
+                val jr = wheelR * 0.52f
+                drawLine(Color(0xFF777777).copy(alpha = alpha),
+                    Offset(wx - jr, baseY), Offset(wx + jr, baseY), strokeWidth = 2.5f)
+                drawLine(Color(0xFF777777).copy(alpha = alpha),
+                    Offset(wx, baseY - jr), Offset(wx, baseY + jr), strokeWidth = 2.5f)
+                // Jant göbeği
+                drawCircle(Color(0xFF555555).copy(alpha = alpha), wheelR * 0.20f, Offset(wx, baseY))
+            }
 
-            // ── Çıkıntı / spoiler (arka taraf)
+            // ── Tampon (ön)
             drawRoundRect(
-                Color.Black.copy(alpha = 0.30f * alpha),
-                topLeft      = Offset(left + W - 8f, bodyTop + bodyH * 0.30f),
-                size         = Size(4f, bodyH * 0.40f),
-                cornerRadius = CornerRadius(2f)
+                darkColor.copy(alpha = 0.90f * alpha),
+                topLeft      = Offset(cabLeft - 1f, shassisT - 4f),
+                size         = Size(8f, shassisH + 4f),
+                cornerRadius = CornerRadius(3f)
             )
 
             // ── Hit overlay
             if (car.hitCorrect || car.hitWrong) {
                 val hitColor = if (car.hitCorrect) Color(0xFF4CAF50) else Color(0xFFD50000)
                 drawRoundRect(
-                    hitColor.copy(alpha = 0.65f * alpha),
-                    topLeft      = Offset(left, bodyTop),
-                    size         = Size(W, bodyH),
-                    cornerRadius = CornerRadius(10f)
+                    hitColor.copy(alpha = 0.55f * alpha),
+                    topLeft      = Offset(cabLeft, cabTop),
+                    size         = Size(cabW, cabH),
+                    cornerRadius = CornerRadius(11f)
+                )
+                drawRoundRect(
+                    hitColor.copy(alpha = 0.45f * alpha),
+                    topLeft      = Offset(bedLeft, bedTop),
+                    size         = Size(bedW, bedH),
+                    cornerRadius = CornerRadius(4f)
                 )
             }
 
-            // ── Sayı (araba gövdesinin ortasında)
+            // ── Sayı (kasada göster)
             val label = when {
                 car.hitCorrect -> "✓"
                 car.hitWrong   -> "✗"
                 else           -> car.number.toString()
             }
             val fsPx = when {
-                car.number >= 40 -> 30f
-                car.number >= 10 -> 34f
-                else             -> 38f
+                car.number >= 40 -> 28f
+                car.number >= 10 -> 32f
+                else             -> 36f
             }
             val style = TextStyle(
                 fontSize   = (fsPx / density).sp,
                 fontWeight = FontWeight.ExtraBold,
                 color      = Color.White.copy(alpha = alpha),
-                shadow     = Shadow(Color.Black.copy(0.6f), Offset(1f, 1f), 2f)
+                shadow     = Shadow(Color.Black.copy(0.7f), Offset(1.5f, 1.5f), 3f)
             )
-            val m    = tm.measure(label, style)
-            val tx   = left + W / 2f - m.size.width / 2f
-            val ty   = bodyTop + bodyH / 2f - m.size.height / 2f
+            val m  = tm.measure(label, style)
+            val tx = bedLeft + bedW / 2f - m.size.width / 2f
+            val ty = bedTop + bedH / 2f - m.size.height / 2f
             drawText(m, topLeft = Offset(tx, ty))
 
-            // ── Hedef araba: altın çerçeve
+            // ── Hedef kamyonet: altın çerçeve
             val isTarget = car.isCorrect && !car.hitCorrect && !car.hitWrong
             if (isTarget) {
                 drawRoundRect(
                     GOLD.copy(alpha = 0.92f),
-                    topLeft      = Offset(left - 3f, bodyTop - 3f),
-                    size         = Size(W + 6f, bodyH + 6f),
-                    cornerRadius = CornerRadius(13f),
+                    topLeft      = Offset(left - 4f, cabTop - 4f),
+                    size         = Size(W + 8f, baseY - cabTop + wheelR + 8f),
+                    cornerRadius = CornerRadius(14f),
                     style        = Stroke(3.5f)
                 )
-                // Parlayan köşe noktaları
-                val corners = listOf(
-                    Offset(left - 3f, bodyTop - 3f),
-                    Offset(left + W + 3f, bodyTop - 3f),
-                    Offset(left - 3f, bodyTop + bodyH + 3f),
-                    Offset(left + W + 3f, bodyTop + bodyH + 3f)
-                )
-                corners.forEach { c ->
-                    drawCircle(GOLD.copy(alpha = 0.85f), 5f, c)
-                }
+                listOf(
+                    Offset(left - 4f, cabTop - 4f),
+                    Offset(left + W + 4f, cabTop - 4f),
+                    Offset(left - 4f, baseY + wheelR + 4f),
+                    Offset(left + W + 4f, baseY + wheelR + 4f)
+                ).forEach { drawCircle(GOLD.copy(alpha = 0.85f), 5f, it) }
             }
         }
     }

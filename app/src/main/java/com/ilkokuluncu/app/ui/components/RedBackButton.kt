@@ -31,7 +31,7 @@ fun RedBackButton(
         modifier = modifier
             .size(size.dp)
             .clip(shape)
-            .background(Color.Red.copy(alpha = 0.85f))
+            .background(Color(0xFFDA0E0A).copy(alpha = 0.90f))
     ) {
         Icon(
             Icons.Default.ArrowBack,

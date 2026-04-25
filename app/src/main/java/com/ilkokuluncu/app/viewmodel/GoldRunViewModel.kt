@@ -122,9 +122,8 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
                     && Random.nextFloat() < 0.80f
 
             if (placeAnswer) {
-                // Pool bitince aynı sorudan yenile (cevap hâlâ aranıyor)
-                if (mutablePool.isEmpty()) mutablePool.addAll(makeAnswerPool(question!!))
-                val value = mutablePool.removeFirst()
+                // Sayı taşıyan coinler her zaman doğru cevabı gösterir
+                val value = question!!.answer
                 // Zıplayarak toplanacak yükseklik: yerden ~85 birim yukarı
                 // (max zıplama ≈104 birim; yerden zıplamadan ulaşılamaz)
                 coins.add(
@@ -133,7 +132,7 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
                         x         = x,
                         y         = gy - 85f,
                         value     = value,
-                        isCorrect = value == question!!.answer,
+                        isCorrect = true,
                         isNormal  = false
                     )
                 )
@@ -204,9 +203,17 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
                     // Başlangıç platformlarını yeniden kur — aksi hâlde top platfor
                     // msuz zemine iner ve tekrar çukura düşer (sonsuz döngü).
                     val respawnPlatforms = buildPlatforms(GOLD_GROUND_Y)
+                    // Coinleri de sıfırla — respawn sonrası başlangıç platformlarında coin olsun
+                    val activeQuestion = s.question ?: generateQuestion()
+                    val respawnPool = s.answerPool.ifEmpty { makeAnswerPool(activeQuestion) }
+                    val (respawnCoins, remainingPool) = buildMixedCoins(
+                        150f, 4200f, 0, respawnPool, activeQuestion
+                    )
                     _state.value = s.copy(
                         ball = ball, lives = newLives, cameraX = 0f,
-                        thornHits = 0, platforms = respawnPlatforms
+                        thornHits = 0, platforms = respawnPlatforms,
+                        coins = respawnCoins, answerPool = remainingPool,
+                        nextCoinId = respawnCoins.size
                     )
                 } else {
                     emitSound(GoldRunSound.GameOver)
@@ -356,7 +363,7 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
         var platforms = s.platforms
         val frontier = platforms.maxOfOrNull { it.x + it.w } ?: 0f
         if (ball.x + 1000f > frontier) {
-            val gap   = 110f + Random.nextFloat() * 80f
+            val gap   = 80f + Random.nextFloat() * 40f
             val width = 640f + Random.nextFloat() * 220f
             val newPlat = GRPlatform(frontier + gap, gy, width, GOLD_TILE * 3)
             platforms = platforms + newPlat

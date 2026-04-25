@@ -34,20 +34,22 @@ class Ritmik5ViewModel(application: Application) : AndroidViewModel(application)
 
     // ── Başlangıç ────────────────────────────────────────────────────────────
     fun startFresh(
-        screenW: Float    = 1280f,
-        speed: Float      = 200f,
-        score: Int        = 0,
-        pointsPerHit: Int = 5,
-        cycleCount: Int   = 0
+        screenW: Float           = 1280f,
+        speed: Float             = 200f,
+        score: Int               = 0,
+        pointsPerHit: Int        = 5,
+        cycleCount: Int          = 0,
+        totalCorrectCatches: Int = 0
     ) {
         loopJob?.cancel()
         _state.value = Ritmik5State(
-            screenW      = screenW,
-            speed        = speed,
-            totalScore   = score,
-            pointsPerHit = pointsPerHit,
-            cycleCount   = cycleCount,
-            countdown    = if (cycleCount == 0) 3.5f else 1.2f
+            screenW             = screenW,
+            speed               = speed,
+            totalScore          = score,
+            pointsPerHit        = pointsPerHit,
+            cycleCount          = cycleCount,
+            totalCorrectCatches = totalCorrectCatches,
+            countdown           = if (cycleCount == 0) 3.5f else 1.2f
         )
         startLoop()
     }
@@ -69,8 +71,9 @@ class Ritmik5ViewModel(application: Application) : AndroidViewModel(application)
             // Doğru hedef ─────────────────────────────────────────────────
             cone.number == s.currentTarget -> {
                 _sounds.tryEmit(Ritmik5Sound.Correct)
-                val newHits  = s.correctHits + cone.number
-                val newScore = s.totalScore + s.pointsPerHit
+                val newHits             = s.correctHits + cone.number
+                val newScore            = s.totalScore + s.pointsPerHit
+                val newCorrectCatches   = s.totalCorrectCatches + 1
 
                 val updatedCones = s.cones.map { c ->
                     when {
@@ -86,20 +89,22 @@ class Ritmik5ViewModel(application: Application) : AndroidViewModel(application)
                     _sounds.tryEmit(Ritmik5Sound.CycleWin)
                     val newSpeed = (s.speed + 20f).coerceAtMost(450f)
                     _state.value = s.copy(
-                        cones         = updatedCones,
-                        correctHits   = emptyList(),
-                        currentTarget = RITMIK5_SEQUENCE[0],
-                        totalScore    = newScore,
-                        speed         = newSpeed,
-                        pointsPerHit  = s.pointsPerHit + 1,
-                        cycleCount    = s.cycleCount + 1
+                        cones               = updatedCones,
+                        correctHits         = emptyList(),
+                        currentTarget       = RITMIK5_SEQUENCE[0],
+                        totalScore          = newScore,
+                        speed               = newSpeed,
+                        pointsPerHit        = s.pointsPerHit + 1,
+                        cycleCount          = s.cycleCount + 1,
+                        totalCorrectCatches = newCorrectCatches
                     )
                 } else {
                     _state.value = s.copy(
-                        cones         = updatedCones,
-                        correctHits   = newHits,
-                        currentTarget = RITMIK5_SEQUENCE[newHits.size],
-                        totalScore    = newScore
+                        cones               = updatedCones,
+                        correctHits         = newHits,
+                        currentTarget       = RITMIK5_SEQUENCE[newHits.size],
+                        totalScore          = newScore,
+                        totalCorrectCatches = newCorrectCatches
                     )
                 }
             }
@@ -150,7 +155,7 @@ class Ritmik5ViewModel(application: Application) : AndroidViewModel(application)
             Ritmik5Phase.FAIL_ANIM -> {
                 val newFail = s.failAnim - dt
                 if (newFail <= 0f)
-                    startFresh(s.screenW, s.speed, s.totalScore, s.pointsPerHit, s.cycleCount)
+                    startFresh(s.screenW, s.speed, s.totalScore, s.pointsPerHit, s.cycleCount, s.totalCorrectCatches)
                 else
                     _state.value = s.copy(failAnim = newFail)
             }
@@ -200,7 +205,7 @@ class Ritmik5ViewModel(application: Application) : AndroidViewModel(application)
     ): Pair<List<Ritmik5Cone>, Int> {
         val tracks   = listOf(0, 1, 2).shuffled()
         val decoys   = generateDecoys(target, cycle)
-        val colorPick = (0..5).toList().shuffled()
+        val colorPick = (0..9).toList().shuffled()
         var id = startId
         val cones = mutableListOf<Ritmik5Cone>()
 

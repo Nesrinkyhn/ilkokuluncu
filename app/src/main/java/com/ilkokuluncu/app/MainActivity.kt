@@ -43,6 +43,8 @@ import com.ilkokuluncu.app.ui.screens.Ritmik2Screen
 import com.ilkokuluncu.app.ui.screens.Ritmik3Screen
 import com.ilkokuluncu.app.ui.screens.Ritmik4Screen
 import com.ilkokuluncu.app.ui.screens.Ritmik5Screen
+import com.ilkokuluncu.app.ui.screens.Ritmik6Screen
+import com.ilkokuluncu.app.ui.screens.Ritmik7Screen
 import com.ilkokuluncu.app.viewmodel.MultiplicationGameViewModel
 import com.ilkokuluncu.app.viewmodel.PatternGameViewModel
 import com.ilkokuluncu.app.viewmodel.PatternPuzzleViewModel
@@ -52,6 +54,8 @@ import com.ilkokuluncu.app.viewmodel.Ritmik2ViewModel
 import com.ilkokuluncu.app.viewmodel.Ritmik3ViewModel
 import com.ilkokuluncu.app.viewmodel.Ritmik4ViewModel
 import com.ilkokuluncu.app.viewmodel.Ritmik5ViewModel
+import com.ilkokuluncu.app.viewmodel.Ritmik6ViewModel
+import com.ilkokuluncu.app.viewmodel.Ritmik7ViewModel
 import com.ilkokuluncu.app.data.PatternGameEvent
 import com.ilkokuluncu.app.data.MarioEvent
 import com.ilkokuluncu.app.data.GoldRunEvent
@@ -86,6 +90,8 @@ class MainActivity : ComponentActivity() {
     private val ritmik3ViewModel:             Ritmik3ViewModel            by viewModels()
     private val ritmik4ViewModel:             Ritmik4ViewModel            by viewModels()
     private val ritmik5ViewModel:             Ritmik5ViewModel            by viewModels()
+    private val ritmik6ViewModel:             Ritmik6ViewModel            by viewModels()
+    private val ritmik7ViewModel:             Ritmik7ViewModel            by viewModels()
 
     lateinit var adManager: AdManager
 
@@ -179,6 +185,8 @@ class MainActivity : ComponentActivity() {
                                 onLevel2Click = { mainViewModel.navigateToRitmik3() },
                                 onLevel3Click = { mainViewModel.navigateToRitmik4() },
                                 onLevel4Click = { mainViewModel.navigateToRitmik5() },
+                                onLevel5Click = { mainViewModel.navigateToRitmik6() },
+                                onLevel6Click = { mainViewModel.navigateToRitmik7() },
                                 onBackPress   = { mainViewModel.navigateToCarpmaMenu() }
                             )
                         }
@@ -223,7 +231,24 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        is NavigationDestination.MainMenu -> {
+                        is NavigationDestination.Ritmik6Game -> {
+                            val ritmik6State by ritmik6ViewModel.state.collectAsState()
+                            LaunchedEffect(destination) { ritmik6ViewModel.startFresh() }
+                            Ritmik6Screen(
+                                state       = ritmik6State,
+                                viewModel   = ritmik6ViewModel,
+                                onBackPress = { mainViewModel.navigateToRitmikSaymaMenu() }
+                            )
+                        }
+
+                        is NavigationDestination.Ritmik7Game -> {
+                            Ritmik7Screen(
+                                viewModel = ritmik7ViewModel,
+                                onBack    = { mainViewModel.navigateToRitmikSaymaMenu() }
+                            )
+                        }
+
+is NavigationDestination.MainMenu -> {
                             MainMenuScreen(
                                 gameModules     = gameModules,
                                 onGameClick     = { moduleId -> mainViewModel.navigateToModule(moduleId) },

@@ -27,6 +27,7 @@ import com.ilkokuluncu.app.data.*
 import com.ilkokuluncu.app.viewmodel.Ritmik3Sound
 import com.ilkokuluncu.app.viewmodel.Ritmik3ViewModel
 import com.ilkokuluncu.app.ui.effects.GameBackgroundMusic
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.gestures.detectTapGestures
 import kotlin.math.*
 
@@ -52,6 +53,8 @@ fun Ritmik3Screen(
     viewModel: Ritmik3ViewModel,
     onBackPress: () -> Unit
 ) {
+    BackHandler { onBackPress() }
+
     val context  = LocalContext.current
     val activity = context as? Activity
     val density  = LocalDensity.current.density

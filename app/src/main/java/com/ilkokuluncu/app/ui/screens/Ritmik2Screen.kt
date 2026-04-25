@@ -27,6 +27,7 @@ import com.ilkokuluncu.app.data.*
 import com.ilkokuluncu.app.viewmodel.Ritmik2Sound
 import com.ilkokuluncu.app.viewmodel.Ritmik2ViewModel
 import com.ilkokuluncu.app.ui.effects.GameBackgroundMusic
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.gestures.detectTapGestures
 import kotlin.math.*
 
@@ -45,6 +46,8 @@ fun Ritmik2Screen(
     viewModel: Ritmik2ViewModel,
     onBackPress: () -> Unit
 ) {
+    BackHandler { onBackPress() }
+
     val context  = LocalContext.current
     val activity = context as? Activity
 
