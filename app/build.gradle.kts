@@ -11,8 +11,8 @@ android {
         applicationId = "com.ilkokuluncu.app"
         minSdk = 28          // Android 9.0 (Pie) – cihazların %97'si
         targetSdk = 35
-        versionCode = 3      // Play Store'a her yüklemede artır
-        versionName = "1.0.3"
+        versionCode = 4      // Play Store'a her yüklemede artır
+        versionName = "1.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

@@ -50,15 +50,13 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
         val gy = GOLD_GROUND_Y
         val platforms = buildPlatforms(gy)
         val q = generateQuestion()
-        val pool = makeAnswerPool(q)
-        val (coins, remainingPool) = buildMixedCoins(150f, 4200f, 0, pool, q)
+        val coins = buildMixedCoins(150f, 4200f, 0, q)
         return GoldRunState(
             ball       = GoldBall(80f, gy - BD),
             platforms  = platforms,
             thorns     = buildThorns(),
             coins      = coins,
             question   = q,
-            answerPool = remainingPool,
             nextCoinId = coins.size
         )
     }
@@ -85,60 +83,39 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
         return GRQuestion(a, b)
     }
 
-    private fun generateDecoys(answer: Int): List<Int> {
-        val set = mutableSetOf<Int>()
-        while (set.size < 4) {
-            val d = (answer + Random.nextInt(-6, 7)).coerceIn(1, 25)
-            if (d != answer) set.add(d)
-        }
-        return set.toList()
-    }
-
-    /** Bir soru için karıştırılmış 5 değer: 4 yanlış + 1 doğru */
-    private fun makeAnswerPool(q: GRQuestion): List<Int> =
-        (generateDecoys(q.answer) + q.answer).shuffled()
-
     /**
      * [fromX, toX] aralığında zemine coin dizisi üretir.
-     * Her ~8 normal coinden sonra pool'dan 1 cevap coini yerleştirilir.
-     * Pool bitiverirse aynı sorudan yenilenir (cevap hâlâ toplanmamış olabilir).
-     * Döndürür: (coins listesi, kullanılmayan pool kalıntısı)
+     * Her 3 normal coinden sonra %80 ihtimalle doğru cevabı gösteren cevap coini eklenir.
      */
     private fun buildMixedCoins(
         fromX: Float, toX: Float, startId: Int,
-        pool: List<Int>, question: GRQuestion?
-    ): Pair<List<GRCoin>, List<Int>> {
+        question: GRQuestion?
+    ): List<GRCoin> {
         val gy = GOLD_GROUND_Y
         val coins = mutableListOf<GRCoin>()
-        val mutablePool = pool.toMutableList()
         var id = startId
         var x = fromX
-        var sinceLastAnswer = 0
+        // 2'den başlıyoruz → ilk cevap coini 1-2 normal coinden sonra hemen gelir
+        var sinceLastAnswer = 2
 
         while (x < toX) {
-            // Her 3 normal coinden sonra %80 ihtimalle cevap coini → beklenen aralık ~3.25 coin
             val placeAnswer = question != null
-                    && sinceLastAnswer >= 3
-                    && Random.nextFloat() < 0.80f
+                    && sinceLastAnswer >= 2
+                    && Random.nextFloat() < 0.75f
 
             if (placeAnswer) {
-                // Sayı taşıyan coinler her zaman doğru cevabı gösterir
-                val value = question!!.answer
-                // Zıplayarak toplanacak yükseklik: yerden ~85 birim yukarı
-                // (max zıplama ≈104 birim; yerden zıplamadan ulaşılamaz)
                 coins.add(
                     GRCoin(
                         id        = id++,
                         x         = x,
                         y         = gy - 85f,
-                        value     = value,
+                        value     = question!!.answer,
                         isCorrect = true,
                         isNormal  = false
                     )
                 )
                 sinceLastAnswer = 0
             } else {
-                // Normal coin: yerden ~72 birim yukarı — zıplamayı zorunlu kılar
                 coins.add(
                     GRCoin(
                         id        = id++,
@@ -153,7 +130,7 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
             }
             x += 110f + Random.nextFloat() * 60f
         }
-        return coins to mutablePool
+        return coins
     }
 
     // ── Events ───────────────────────────────────────────────────────────────
@@ -205,14 +182,11 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
                     val respawnPlatforms = buildPlatforms(GOLD_GROUND_Y)
                     // Coinleri de sıfırla — respawn sonrası başlangıç platformlarında coin olsun
                     val activeQuestion = s.question ?: generateQuestion()
-                    val respawnPool = s.answerPool.ifEmpty { makeAnswerPool(activeQuestion) }
-                    val (respawnCoins, remainingPool) = buildMixedCoins(
-                        150f, 4200f, 0, respawnPool, activeQuestion
-                    )
+                    val respawnCoins = buildMixedCoins(150f, 4200f, 0, activeQuestion)
                     _state.value = s.copy(
                         ball = ball, lives = newLives, cameraX = 0f,
                         thornHits = 0, platforms = respawnPlatforms,
-                        coins = respawnCoins, answerPool = remainingPool,
+                        coins = respawnCoins,
                         nextCoinId = respawnCoins.size
                     )
                 } else {
@@ -305,7 +279,6 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
         var scoreAdd = 0
         var questionsAnswered = s.questionsAnswered
         var currentQuestion   = s.question
-        var currentPool       = s.answerPool
         var nextCoinId        = s.nextCoinId
 
         val updatedCoins = s.coins.map { c ->
@@ -319,19 +292,14 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
                     when {
                         c.isNormal -> {
                             emitSound(GoldRunSound.CoinNormal)
-                            scoreAdd += 10
+                            scoreAdd += 5       // normal coin: 5 puan
                             c.copy(collected = true, anim = 0.35f)
                         }
-                        c.isCorrect -> {
+                        else -> {   // cevap coini — her zaman doğru yanıtı taşır
                             emitSound(GoldRunSound.CoinCorrect)
-                            scoreAdd += 20
+                            scoreAdd += 50      // cevap coini: 50 puan (normal coinle karışmasın)
                             questionsAnswered++
                             c.copy(collected = true, anim = 0.6f)
-                        }
-                        else -> {
-                            emitSound(GoldRunSound.CoinWrong)
-                            scoreAdd -= 5
-                            c.copy(wrong = true, anim = 0.4f)
                         }
                     }
                 } else c
@@ -340,7 +308,7 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
 
         var finalCoins = updatedCoins
 
-        // Doğru cevap toplandı → yeni soru + yeni pool
+        // Doğru cevap toplandı → yeni soru
         if (questionsAnswered > s.questionsAnswered) {
             if (questionsAnswered >= s.totalQuestions) {
                 emitSound(GoldRunSound.Victory)
@@ -352,10 +320,13 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
                 )
                 return
             }
-            val newQ = generateQuestion()
-            currentQuestion = newQ
-            currentPool = makeAnswerPool(newQ)   // yeni soru için taze pool
-            // Yeni cevap coinleri platform üretiminde otomatik yerleşecek
+            currentQuestion = generateQuestion()
+            // Ekranda kalan toplanmamış cevap coinlerini YENİ sorunun yanıtıyla güncelle.
+            // Aksi hâlde eski sayılar "yanlış" görünür → fake coin izlenimi yaratır.
+            val newAnswer = currentQuestion!!.answer
+            finalCoins = finalCoins.map { c ->
+                if (!c.isNormal && !c.collected) c.copy(value = newAnswer) else c
+            }
         }
 
         // ── Sonsuz platform uzatma ────────────────────────────────────────────
@@ -368,14 +339,12 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
             val newPlat = GRPlatform(frontier + gap, gy, width, GOLD_TILE * 3)
             platforms = platforms + newPlat
 
-            // Platforma karışık coin dizisi ekle (normal + ara sıra cevap)
-            val (newCoins, remainingPool) = buildMixedCoins(
+            val newCoins = buildMixedCoins(
                 newPlat.x + 50f, newPlat.x + newPlat.w - 50f,
-                nextCoinId, currentPool, currentQuestion
+                nextCoinId, currentQuestion
             )
             finalCoins = finalCoins + newCoins
             nextCoinId += newCoins.size
-            currentPool = remainingPool
         }
 
         // Kameranın gerisinde kalan eski veri temizliği
@@ -386,7 +355,7 @@ class GoldRunViewModel(application: Application) : AndroidViewModel(application)
 
         _state.value = s.copy(
             ball = ball, thorns = thorns, coins = finalCoins, platforms = platforms,
-            question = currentQuestion, answerPool = currentPool, cameraX = newCam,
+            question = currentQuestion, cameraX = newCam,
             lives = lives, thornHits = thornHits,
             score = (s.score + scoreAdd).coerceAtLeast(0),
             questionsAnswered = questionsAnswered, nextCoinId = nextCoinId

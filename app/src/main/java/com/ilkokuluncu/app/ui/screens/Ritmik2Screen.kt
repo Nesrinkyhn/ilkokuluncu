@@ -7,6 +7,7 @@ import android.media.SoundPool
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -211,11 +212,11 @@ fun Ritmik2Screen(
                 // Geri butonu
                 Box(
                     modifier = Modifier
-                        .size(54.dp)
-                        .background(Color(0xC8D32F2F), RoundedCornerShape(8.dp))
+                        .size(44.dp)
+                        .background(Color(0xFFE53935), CircleShape)
                         .pointerInput(Unit) { detectTapGestures { onBackPress() } },
                     contentAlignment = Alignment.Center
-                ) { Text("✕", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold) }
+                ) { Text("✕", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold) }
 
                 // Sayı dizisi: 2 4 6 … 20
                 Row(

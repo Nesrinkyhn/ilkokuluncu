@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -608,16 +609,13 @@ private fun GrControlsOverlay(onEvent: (GoldRunEvent) -> Unit, onBackPress: () -
     Box(modifier = Modifier.fillMaxSize()) {
 
         // ── Ekranın tamamı: dokun = zıpla ─────────────────────────────────────
-        // Sadece sol kenar ◀ bölgesi hariç (orada geri gitme var)
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
                     awaitPointerEventScope {
                         while (true) {
-                            val down = awaitFirstDown(requireUnconsumed = false)
-                            // Sol kenar 20%'de ise ◀ butonu işler, buraya düşmez
-                            // Tüm ekran zıplama tetikler (◀ bölgesi de zıplar — sorun değil)
+                            awaitFirstDown(requireUnconsumed = false)
                             onEvent(GoldRunEvent.JumpDown)
                             do {
                                 val ev = awaitPointerEvent()
@@ -627,35 +625,6 @@ private fun GrControlsOverlay(onEvent: (GoldRunEvent) -> Unit, onBackPress: () -
                     }
                 }
         )
-
-        // ── Sol kenar: basılı tut = geri git ─────────────────────────────────
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 10.dp, bottom = 10.dp)
-                .width(135.dp)
-                .height(120.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xAAD32F2F))
-                .pointerInput(Unit) {
-                    awaitPointerEventScope {
-                        while (true) {
-                            awaitFirstDown(requireUnconsumed = false)
-                            onEvent(GoldRunEvent.LeftDown)
-                            do {
-                                val ev = awaitPointerEvent()
-                            } while (ev.changes.any { it.pressed })
-                            onEvent(GoldRunEvent.LeftUp)
-                        }
-                    }
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("◀", fontSize = 39.sp, color = Color.White, fontWeight = FontWeight.Bold)
-                Text("geri", fontSize = 15.sp, color = Color.White.copy(alpha = 0.8f))
-            }
-        }
 
         // ── Zıplama ipucu (ortada, soluk) ────────────────────────────────────
         Text(
@@ -672,8 +641,8 @@ private fun GrControlsOverlay(onEvent: (GoldRunEvent) -> Unit, onBackPress: () -
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(8.dp)
-                .size(38.dp)
-                .background(Color(0x99000000), RoundedCornerShape(8.dp))
+                .size(44.dp)
+                .background(Color(0xFFE53935), CircleShape)
                 .pointerInput(Unit) {
                     awaitPointerEventScope {
                         while (true) {
@@ -683,7 +652,7 @@ private fun GrControlsOverlay(onEvent: (GoldRunEvent) -> Unit, onBackPress: () -
                     }
                 },
             contentAlignment = Alignment.Center
-        ) { Text("✕", color = Color.White, fontSize = 16.sp) }
+        ) { Text("✕", color = Color.White, fontSize = 18.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold) }
     }
 }
 

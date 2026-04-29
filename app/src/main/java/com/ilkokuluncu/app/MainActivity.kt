@@ -232,10 +232,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         is NavigationDestination.Ritmik6Game -> {
-                            val ritmik6State by ritmik6ViewModel.state.collectAsState()
-                            LaunchedEffect(destination) { ritmik6ViewModel.startFresh() }
                             Ritmik6Screen(
-                                state       = ritmik6State,
                                 viewModel   = ritmik6ViewModel,
                                 onBackPress = { mainViewModel.navigateToRitmikSaymaMenu() }
                             )

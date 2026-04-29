@@ -58,7 +58,6 @@ data class GoldRunState(
     val thorns: List<GRThorn>        = emptyList(),
     val coins: List<GRCoin>          = emptyList(),
     val question: GRQuestion?        = null,
-    val answerPool: List<Int>        = emptyList(), // yerleştirilmeyi bekleyen cevap değerleri
     val cameraX: Float               = 0f,
     val lives: Int                   = 5,
     val thornHits: Int               = 0,
